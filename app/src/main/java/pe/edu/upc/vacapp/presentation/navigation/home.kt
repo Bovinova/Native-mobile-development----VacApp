@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.presentation.navigation
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
@@ -26,7 +27,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +41,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pe.edu.upc.vacapp.R
+import pe.edu.upc.vacapp.presentation.di.PresentationModule
+import pe.edu.upc.vacapp.presentation.view.BovineScreen
+import pe.edu.upc.vacapp.presentation.viewmodel.BovineViewModel
 
 
 // Colors
@@ -72,9 +82,14 @@ fun Home() {
     )
 
     val selectedIndex = remember { mutableStateOf(0) }
+    val bovineViewModel = PresentationModule.getBovineViewModel()
 
     Scaffold(
         topBar = {
+            var expanded by remember { mutableStateOf(false) }
+            var rotated by remember { mutableStateOf(false) }
+            val rotation by animateFloatAsState(targetValue = if (rotated) 180f else 0f)
+
             TopAppBar(
                 title = {
                     Text(
@@ -85,12 +100,36 @@ fun Home() {
                     )
                 },
                 actions = {
-                    IconButton(onClick = {  }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings",
-                            tint = Color.White
-                        )
+                    Row {
+                        IconButton(
+                            onClick = {
+                                rotated = !rotated
+                                expanded = !expanded
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings",
+                                tint = Color.White,
+                                modifier = Modifier.rotate(rotation)
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = {
+                                expanded = false
+                                rotated = false
+                            }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Mi cuenta") },
+                                onClick = { /* Acción de opción 1 */ }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Cerrar Sesion") },
+                                onClick = { /* Acción de opción 2 */ }
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkGreen)
@@ -149,7 +188,10 @@ fun Home() {
 
             }
             composable("cows") {
-
+                BovineScreen(
+                    viewModel = bovineViewModel,
+                    onTap = { /* pondre mas info para editar */ }
+                )
             }
             composable("statistics") {
 
