@@ -72,6 +72,9 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.material3)
+    implementation(libs.androidx.material.icons.extended)
 
+    // SignIn Google
+    implementation(libs.play.services.auth)
 
 }

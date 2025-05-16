@@ -1,7 +1,9 @@
 package pe.edu.upc.vacapp.data.di
 
 import pe.edu.upc.vacapp.data.remote.ApiConstants
+import pe.edu.upc.vacapp.data.remote.AuthApiService
 import pe.edu.upc.vacapp.data.remote.BovineService
+import pe.edu.upc.vacapp.data.repository.AuthRepository
 import pe.edu.upc.vacapp.data.repository.BovineRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,4 +25,13 @@ object DataModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+    fun getAuthRepository(): AuthRepository {
+        return AuthRepository(getAuthService())
+    }
+
+    fun getAuthService(): AuthApiService {
+        return getRetrofit().create(AuthApiService::class.java)
+    }
+
 }
