@@ -54,9 +54,11 @@ import androidx.compose.foundation.layout.width
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.LaunchedEffect
+import pe.edu.upc.vacapp.presentation.view.LoginScreen
+import pe.edu.upc.vacapp.presentation.viewmodel.AuthViewModel
 
-
-
+import androidx.compose.runtime.collectAsState
 
 // Colors
 val DarkGreen = Color(0xFF4A5F58)
@@ -66,7 +68,10 @@ val CreamColor = Color(0xFFFFFDD0)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewModel) {
+fun MainScaffold(
+    rootNavController: NavHostController, bovineViewModel: BovineViewModel, authViewModel: AuthViewModel) {
+    val internalNavController = rememberNavController()
+
 
     val navigationItems = listOf(
         NavigationItem(
@@ -98,6 +103,7 @@ fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewMo
             var expanded by remember { mutableStateOf(false) }
             var rotated by remember { mutableStateOf(false) }
             val rotation by animateFloatAsState(targetValue = if (rotated) 180f else 0f)
+            var showDialog by remember { mutableStateOf(false) }
 
             TopAppBar(
                 title = {
@@ -147,11 +153,9 @@ fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewMo
                                     }
                                 },
                                 onClick = {
-                                    // Llama a logout y navega a login
-                                    PresentationModule.getAuthViewModel().logout()
-                                    navController.navigate("login") {
-                                        popUpTo(0) { inclusive = true } // Limpia el backstack
-                                    }
+                                    expanded = false
+                                    rotated = false
+                                    authViewModel.logout()
                                 }
                             )
                         }
@@ -163,12 +167,11 @@ fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewMo
         containerColor = BackgroundLight
     ) { padding ->
         NavHost(
-            navController = navController,
+            navController = internalNavController,
             startDestination = "home",
             modifier = Modifier.padding(padding)
         ) {
             composable("home") {
-                // Dashboard en Home
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -183,25 +186,16 @@ fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewMo
                         color = DarkGreen
                     )
                     Spacer(modifier = Modifier.height(32.dp))
-                    // Opciones de dashboard
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        DashboardButton("Campaigns", R.drawable.ic_campaigns, {
-
-                        }, modifier = Modifier.weight(1f))
-                        DashboardButton("Animals", R.drawable.ic_cow, {
-
-                        }, modifier = Modifier.weight(1f))
-                        DashboardButton("Inventory", R.drawable.ic_inventory, {
-
-                        }, modifier = Modifier.weight(1f))
-
+                        DashboardButton("Campaigns", R.drawable.ic_campaigns, {}, modifier = Modifier.weight(1f))
+                        DashboardButton("Animals", R.drawable.ic_cow, {}, modifier = Modifier.weight(1f))
+                        DashboardButton("Inventory", R.drawable.ic_inventory, {}, modifier = Modifier.weight(1f))
                     }
                 }
             }
-
         }
     }
 }
@@ -232,9 +226,10 @@ fun DashboardButton(
     }
 }
 
+
 data class NavigationItem(
     val icon: ImageVector? = null,
     val iconPainter: Painter? = null,
     val title: String,
     val route: String
-)
+){}

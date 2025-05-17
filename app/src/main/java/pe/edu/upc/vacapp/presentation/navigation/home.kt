@@ -3,6 +3,7 @@ package pe.edu.upc.vacapp.presentation.navigation
 
 import androidx.compose.runtime.Composable
 
+import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,39 +11,50 @@ import pe.edu.upc.vacapp.presentation.di.PresentationModule
 import pe.edu.upc.vacapp.presentation.view.LoginScreen
 import pe.edu.upc.vacapp.presentation.view.RegisterScreen
 
-
 @Composable
 fun Home() {
-    val navController = rememberNavController()
-
+    val rootNavController = rememberNavController()
     val bovineViewModel = PresentationModule.getBovineViewModel()
     val authViewModel = PresentationModule.getAuthViewModel()
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
-    NavHost(
-        navController = navController,
-        startDestination = "login"
-    ) {
-        // LOGIN
-        composable("login") {
-            LoginScreen(
-                viewModel = authViewModel,
-                onLoginSuccess = { navController.navigate("main") { popUpTo("login") { inclusive = true } } },
-                onNavigateToRegister = { navController.navigate("register") }
-            )
-        }
+    var initialRoute by remember { mutableStateOf<String?>(null) }
 
-        // REGISTER
-        composable("register") {
-            RegisterScreen(
-                viewModel = authViewModel,
-                onRegisterSuccess = { navController.navigate("main") { popUpTo("register") { inclusive = true } } },
-                onNavigateToLogin = { navController.navigate("login") }
-            )
-        }
+    LaunchedEffect(isLoggedIn) {
+        initialRoute = if (isLoggedIn) "main" else "login"
+    }
 
-        // MAIN APP
-        composable("main") {
-            MainScaffold(navController, bovineViewModel)
+    if (initialRoute != null) {
+        NavHost(
+            navController = rootNavController,
+            startDestination = initialRoute!!
+        ) {
+            composable("login") {
+                LoginScreen(
+                    viewModel = authViewModel,
+                    onLoginSuccess = {
+                        rootNavController.navigate("main") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onNavigateToRegister = { rootNavController.navigate("register") }
+                )
+            }
+            composable("register") {
+                RegisterScreen(
+                    viewModel = authViewModel,
+                    onRegisterSuccess = {
+                        rootNavController.navigate("main") {
+                            popUpTo("register") { inclusive = true }
+                        }
+                    },
+                    onNavigateToLogin = { rootNavController.navigate("login") }
+                )
+            }
+            composable("main") {
+                MainScaffold(rootNavController, bovineViewModel, authViewModel)
+            }
         }
     }
+
 }
