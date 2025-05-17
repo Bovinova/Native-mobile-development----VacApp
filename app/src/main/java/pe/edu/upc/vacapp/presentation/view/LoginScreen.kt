@@ -35,7 +35,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 
-
+//Google Sign In
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 
 val DarkGreen = Color(0xFF4A5F58)
 val BackgroundLight = Color(0xFFF2F2F2)
@@ -51,6 +61,35 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     val error by viewModel.error.collectAsState()
     val user by viewModel.user.collectAsState()
+
+
+    //Google Sign In
+    val context = LocalContext.current
+    val gso = remember {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("1095468117583-oths4cv20sc8evcbmr9qocv95evkpgsb.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+    }
+    val googleSignInClient = remember { GoogleSignIn.getClient(context, gso) }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            Firebase.auth.signInWithCredential(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onLoginSuccess()
+                    } else {
+                        // Maneja el error
+                    }
+                }
+        } catch (e: ApiException) {
+            // Maneja el error
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -87,7 +126,10 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
-                onClick = { },
+                onClick = {
+                    val signInIntent = googleSignInClient.signInIntent
+                    launcher.launch(signInIntent)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .height(50.dp),

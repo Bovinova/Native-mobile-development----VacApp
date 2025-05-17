@@ -76,5 +76,7 @@ dependencies {
 
     // SignIn Google
     implementation(libs.play.services.auth)
+    implementation(libs.play.services.auth.v2070)
+    implementation(libs.firebase.auth.ktx)
 
 }
