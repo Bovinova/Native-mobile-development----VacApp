@@ -39,7 +39,13 @@ import androidx.compose.ui.unit.sp
 import android.app.AlertDialog
 import android.view.Gravity
 import android.widget.TextView
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.input.VisualTransformation
 
 
 val DarkGreen = Color(0xFF4A5F58)
@@ -200,12 +206,20 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        var passwordVisible by remember { mutableStateOf(false) }
+
         TextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password", color = DarkGreen) },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña")
+                }
+            },
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = CreamColor,
                 focusedContainerColor = CreamColor,
@@ -245,6 +259,8 @@ fun LoginScreen(
     }
 
     if (user != null) {
-        onLoginSuccess()
+        LaunchedEffect(user) {
+            onLoginSuccess()
+        }
     }
 }

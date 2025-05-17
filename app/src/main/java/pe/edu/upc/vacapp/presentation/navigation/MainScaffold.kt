@@ -23,12 +23,15 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -42,6 +45,19 @@ import pe.edu.upc.vacapp.presentation.di.PresentationModule
 import pe.edu.upc.vacapp.presentation.view.BovineScreen
 import pe.edu.upc.vacapp.presentation.viewmodel.BovineViewModel
 
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+
+
+
+
 // Colors
 val DarkGreen = Color(0xFF4A5F58)
 val BackgroundLight = Color(0xFFF2F2F2)
@@ -51,7 +67,6 @@ val CreamColor = Color(0xFFFFFDD0)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewModel) {
-    val navController = rememberNavController()
 
     val navigationItems = listOf(
         NavigationItem(
@@ -60,24 +75,23 @@ fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewMo
             route = "home"
         ),
         NavigationItem(
-            iconPainter = painterResource(id =R.drawable.ic_organization),
-            title = "Organization",
-            route = "organization"
+            iconPainter = painterResource(id =R.drawable.ic_campaigns),
+            title = "Campaigns",
+            route = "campaigns"
         ),
         NavigationItem(
             iconPainter = painterResource(id =R.drawable.ic_cow),
-            title = "Cows",
-            route = "cows"
+            title = "Animals",
+            route = "animals"
         ),
         NavigationItem(
-            iconPainter = painterResource(id =R.drawable.ic_statistics),
-            title = "Statistics",
-            route = "statistics"
+            iconPainter = painterResource(id =R.drawable.ic_inventory),
+            title = "Inventory",
+            route = "inventory"
         )
     )
 
     val selectedIndex = remember { mutableStateOf(0) }
-    val bovineViewModel = PresentationModule.getBovineViewModel()
 
     Scaffold(
         topBar = {
@@ -121,46 +135,30 @@ fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewMo
                                 onClick = { /* Acción de opción 1 */ }
                             )
                             DropdownMenuItem(
-                                text = { Text("Cerrar Sesion") },
-                                onClick = { /* Acción de opción 2 */ }
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_log_out),
+                                            contentDescription = "Cerrar Sesión",
+                                            tint = DarkGreen
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("Cerrar Sesión")
+                                    }
+                                },
+                                onClick = {
+                                    // Llama a logout y navega a login
+                                    PresentationModule.getAuthViewModel().logout()
+                                    navController.navigate("login") {
+                                        popUpTo(0) { inclusive = true } // Limpia el backstack
+                                    }
+                                }
                             )
                         }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkGreen)
             )
-        },
-        bottomBar = {
-            NavigationBar(containerColor = DarkGreen) {
-                navigationItems.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        selected = selectedIndex.value == index,
-                        icon = {
-                            if (item.iconPainter != null) {
-                                Image(
-                                    painter = item.iconPainter,
-                                    contentDescription = item.title ,
-                                    modifier = Modifier.size(45.dp)
-                                )
-                            } else if (item.icon != null) {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = item.title,
-                                    tint = Color.Black,
-                                    modifier = Modifier.size(45.dp)
-                                )
-                            }
-                        },
-                        onClick = {
-                            selectedIndex.value = index
-                            navController.navigate(item.route)
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = CreamColor
-                        )
-                    )
-                }
-            }
         },
         containerColor = BackgroundLight
     ) { padding ->
@@ -170,27 +168,66 @@ fun MainScaffold(navController: NavHostController, bovineViewModel: BovineViewMo
             modifier = Modifier.padding(padding)
         ) {
             composable("home") {
-                Text(
-                    text = "Welcome to VacApp!",
-                    //text = "Welcome, $userName!",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = DarkGreen
-                )
+                // Dashboard en Home
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Welcome to VacApp!",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = DarkGreen
+                    )
+                    Spacer(modifier = Modifier.height(32.dp))
+                    // Opciones de dashboard
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        DashboardButton("Campaigns", R.drawable.ic_campaigns, {
+
+                        }, modifier = Modifier.weight(1f))
+                        DashboardButton("Animals", R.drawable.ic_cow, {
+
+                        }, modifier = Modifier.weight(1f))
+                        DashboardButton("Inventory", R.drawable.ic_inventory, {
+
+                        }, modifier = Modifier.weight(1f))
+
+                    }
+                }
             }
 
-            composable("organization") {
+        }
+    }
+}
 
-            }
-            composable("cows") {
-                BovineScreen(
-                    viewModel = bovineViewModel,
-                    onTap = { /* pondre mas info para editar */ }
-                )
-            }
-            composable("statistics") {
-
-            }
+@Composable
+fun DashboardButton(
+    title: String,
+    iconRes: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .height(100.dp)
+            .padding(8.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = CreamColor)
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = title,
+                tint = DarkGreen,
+                modifier = Modifier.size(40.dp)
+            )
+            Text(title, color = DarkGreen)
         }
     }
 }
