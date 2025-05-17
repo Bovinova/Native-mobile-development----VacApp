@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.presentation.view
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,19 +34,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
-
-//Google Sign In
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.sp
+import android.app.AlertDialog
+import android.view.Gravity
+import android.widget.TextView
+import androidx.compose.ui.graphics.toArgb
+
 
 val DarkGreen = Color(0xFF4A5F58)
 val BackgroundLight = Color(0xFFF2F2F2)
@@ -61,35 +56,8 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     val error by viewModel.error.collectAsState()
     val user by viewModel.user.collectAsState()
-
-
-    //Google Sign In
     val context = LocalContext.current
-    val gso = remember {
-        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("1095468117583-oths4cv20sc8evcbmr9qocv95evkpgsb.apps.googleusercontent.com")
-            .requestEmail()
-            .build()
-    }
-    val googleSignInClient = remember { GoogleSignIn.getClient(context, gso) }
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        try {
-            val account = task.getResult(ApiException::class.java)
-            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-            Firebase.auth.signInWithCredential(credential)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        onLoginSuccess()
-                    } else {
-                        // Maneja el error
-                    }
-                }
-        } catch (e: ApiException) {
-            // Maneja el error
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -127,8 +95,25 @@ fun LoginScreen(
         ) {
             Button(
                 onClick = {
-                    val signInIntent = googleSignInClient.signInIntent
-                    launcher.launch(signInIntent)
+                    val azulGoogleInt = Color(0xFF1A73E8).toArgb()
+
+                    val dialogGoogle = AlertDialog.Builder(context)
+                        .setTitle("¡Coming soon!")
+                        .setMessage("We're working to enable Google sign-in 🔐✨\nThank you for your patience.")
+                        .setIcon(R.drawable.ic_google)
+                        .setPositiveButton("OK") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+
+                    dialogGoogle.setOnShowListener {
+                        dialogGoogle.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(azulGoogleInt)
+                        val messageView = dialogGoogle.findViewById<TextView>(android.R.id.message)
+                        messageView?.gravity = Gravity.CENTER
+                        messageView?.textSize = 16f
+                    }
+
+                    dialogGoogle.show()
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -153,7 +138,28 @@ fun LoginScreen(
             Spacer(modifier = Modifier.width(20.dp))
 
             Button(
-                onClick = { },
+                onClick = {
+                    val azulOutlookInt = Color(0xFF0078D4).toArgb()
+
+                    val dialogOutlook = AlertDialog.Builder(context)
+                        .setTitle("¡Coming soon!")
+                        .setMessage("We're working to enable Outlook sign-in 📧✨\nThank you for your patience.")
+                        .setIcon(R.drawable.ic_outlook)
+                        .setPositiveButton("OK") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+
+                    dialogOutlook.setOnShowListener {
+                        dialogOutlook.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(azulOutlookInt)
+
+                        val messageView = dialogOutlook.findViewById<TextView>(android.R.id.message)
+                        messageView?.gravity = Gravity.CENTER
+                        messageView?.textSize = 16f
+                    }
+
+                    dialogOutlook.show()
+                },
                 modifier = Modifier
                     .weight(1f)
                     .height(50.dp),
