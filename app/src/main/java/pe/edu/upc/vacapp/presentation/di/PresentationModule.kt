@@ -1,20 +1,17 @@
 package pe.edu.upc.vacapp.presentation.di
 
 import pe.edu.upc.vacapp.data.di.DataModule
-
 import pe.edu.upc.vacapp.presentation.viewmodel.AuthViewModel
 import pe.edu.upc.vacapp.presentation.viewmodel.BovineViewModel
 
-
 object PresentationModule {
-
-
-    fun getBovineViewModel(): BovineViewModel {
-        return BovineViewModel(DataModule.getBovineRepository())
+    private val _authViewModel: AuthViewModel by lazy {
+        AuthViewModel(DataModule.getAuthRepository())
+    }
+    private val _bovineViewModel: BovineViewModel by lazy {
+        BovineViewModel(DataModule.getBovineRepository())
     }
 
-    fun getAuthViewModel(): AuthViewModel {
-        return AuthViewModel(DataModule.getAuthRepository())
-    }
-
+    fun getBovineViewModel(): BovineViewModel = _bovineViewModel
+    fun getAuthViewModel(): AuthViewModel = _authViewModel
 }

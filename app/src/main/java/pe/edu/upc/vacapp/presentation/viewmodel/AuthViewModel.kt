@@ -22,18 +22,24 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         viewModelScope.launch {
             try {
                 val response = repository.login(email, password)
                 _user.value = response.token
+                _error.value = null
                 _isLoggedIn.value = true
+                onSuccess()
             } catch (e: Exception) {
-                _error.value = getErrorMessage(e)
+                val message = getErrorMessage(e)
+                _error.value = message
                 _isLoggedIn.value = false
+                onFailure(message)
             }
         }
     }
+
+
 
 
 

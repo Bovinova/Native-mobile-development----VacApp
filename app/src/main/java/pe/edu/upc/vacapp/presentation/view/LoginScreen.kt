@@ -233,7 +233,14 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.login(email, password) },
+            onClick = {
+                viewModel.login(
+                    email,
+                    password,
+                    onSuccess = { onLoginSuccess() },
+                    onFailure = { /* puedes mostrar un snackbar, toast o mensaje si deseas */ }
+                )
+            },
             modifier = Modifier
                 .width(220.dp)
                 .height(48.dp)
@@ -247,6 +254,7 @@ fun LoginScreen(
             Text("Sign In")
         }
 
+
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(onClick = onNavigateToRegister) {
@@ -258,9 +266,4 @@ fun LoginScreen(
         }
     }
 
-    if (user != null) {
-        LaunchedEffect(user) {
-            onLoginSuccess()
-        }
-    }
 }
