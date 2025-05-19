@@ -1,5 +1,6 @@
 [versions]
 agp = "8.9.2"
+coilComposeVersion = "2.2.2"
 firebaseAuthKtx = "23.2.0"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
@@ -21,10 +22,13 @@ lifecycleViewmodelCompose = "2.9.0"
 ksp = "2.0.21-1.0.28"
 roomRuntime = "2.7.1"
 navigationCompose = "2.9.0"
+uiTextGoogleFonts = "<latest-version>"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

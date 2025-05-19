@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.play.services.auth.v2070)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.coil.kt.coil.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
 
 
 }

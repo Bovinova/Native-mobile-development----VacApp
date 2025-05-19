@@ -174,7 +174,7 @@ fun RegisterScreen(
         Button(
             onClick = {
                 if (allValid) {
-                    viewModel.register(name, email, password)
+                    viewModel.register(name, password, email)
                 } else {
                     localError = "La contraseña no cumple con todos los requisitos."
                 }

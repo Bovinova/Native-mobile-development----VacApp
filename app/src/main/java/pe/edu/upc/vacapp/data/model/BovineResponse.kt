@@ -4,20 +4,26 @@ import com.google.gson.annotations.SerializedName
 import pe.edu.upc.vacapp.domain.model.Bovine
 
 data class BovineResponse(
-    @SerializedName("Name") val name: String?,
-    @SerializedName("Gender") val gender: String?,
-    @SerializedName("BirthDate") val birthDate: String?,
-    @SerializedName("Breed") val breed: String?,
-    @SerializedName("Location") val location: String?,
-    @SerializedName("StableId") val stableId: Int?,
-    @SerializedName("fileData") val fileData: String?
+    @SerializedName("id") val id: Int?,
+    @SerializedName("name") val name: String?,
+    @SerializedName("gender") val gender: String?,
+    @SerializedName("birthDate") val birthDate: String?,
+    @SerializedName("breed") val breed: String?,
+    @SerializedName("location") val location: String?,
+    @SerializedName("bovineImg") val bovineImg: String?,
+    @SerializedName("stableId") val stableId: Int?
 )
 
 fun BovineResponse.toBovine(): Bovine {
     return Bovine(
+        id = id ?: 0,
         name = name ?: "",
         gender = gender ?: "",
+        birthDate = birthDate ?: "",
         breed = breed ?: "",
-        stableId = stableId ?: 0
+        location = location ?: "",
+        bovineImg = bovineImg ?: "",
+        stableId = stableId ?: 0,
+
     )
 }

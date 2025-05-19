@@ -9,16 +9,12 @@ import pe.edu.upc.vacapp.domain.model.Bovine
 class BovineRepository(
     private val bovineService: BovineService,
 ) {
-    suspend fun searchBovine(): List<Bovine> =  withContext(Dispatchers.IO) {
-       val response = bovineService.searchBovine()
+    suspend fun searchBovine(token: String): List<Bovine> = withContext(Dispatchers.IO) {
+        val response = bovineService.searchBovine("Bearer $token")
         if (response.isSuccessful) {
-            response.body()?.let { bovineResponse ->
-                return@withContext bovineResponse.map {
-                    it.toBovine()
-                }
-            }
+            response.body()?.map { it.toBovine() } ?: emptyList()
+        } else {
+            emptyList()
         }
-
-        return@withContext emptyList()
     }
 }

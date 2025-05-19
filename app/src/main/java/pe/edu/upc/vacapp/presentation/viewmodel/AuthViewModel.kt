@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import pe.edu.upc.vacapp.data.model.UserResponse
 import pe.edu.upc.vacapp.data.repository.AuthRepository
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
@@ -13,8 +14,8 @@ import java.net.UnknownHostException
 
 class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
-    private val _user = MutableStateFlow<String?>(null)
-    val user: StateFlow<String?> = _user
+    private val _user = MutableStateFlow<UserResponse?>(null)
+    val user: StateFlow<UserResponse?> = _user
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
@@ -22,11 +23,13 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
+
+
     fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         viewModelScope.launch {
             try {
                 val response = repository.login(email, password)
-                _user.value = response.token
+                _user.value = response
                 _error.value = null
                 _isLoggedIn.value = true
                 onSuccess()
@@ -41,13 +44,11 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
 
 
-
-
-    fun register(username: String, email: String, password: String) {
+    fun register(username: String, password: String, email: String) {
         viewModelScope.launch {
             try {
                 val response = repository.register(username, password, email)
-                _user.value = response.token
+                _user.value = response
                 _isLoggedIn.value = true
             } catch (e: Exception) {
                 _error.value = getErrorMessage(e)
