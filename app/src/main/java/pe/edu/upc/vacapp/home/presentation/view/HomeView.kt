@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,8 +29,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.ui.theme.Color
 
@@ -284,91 +285,17 @@ fun HomeView() {
             }
         }
 
-        Row(
-            horizontalArrangement = Arrangement.End,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(25.dp, 0.dp)
+                .padding(horizontal = 25.dp)
         ) {
-            if(isButtonActive.value) {
-                Column(
-                    modifier = Modifier
-                        .offset(x = (15).dp, y = (-80).dp)
-                        .background(Color.AlmondCream),
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.cow),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(24.dp)
-                                .height(24.dp)
-                        )
-                        Text(
-                            "Animal", fontWeight = FontWeight.ExtraLight,
-                            fontSize = 20.sp
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.megaphone),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(24.dp)
-                                .height(24.dp)
-                        )
-                        Text(
-                            "Campaign", fontWeight = FontWeight.ExtraLight,
-                            fontSize = 20.sp
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.resource_package),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(24.dp)
-                                .height(24.dp)
-                        )
-                        Text(
-                            "Inventory", fontWeight = FontWeight.ExtraLight,
-                            fontSize = 20.sp
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.barn),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(24.dp)
-                                .height(24.dp)
-                        )
-                        Text(
-                            "Barn", fontWeight = FontWeight.ExtraLight,
-                            fontSize = 20.sp
-                        )
-                    }
-
-
-                }
-            }
             IconButton(
-                //modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.TopEnd),
                 onClick = {
                     isButtonActive.value = !isButtonActive.value
-                }) {
+                }
+            ) {
                 val icon =
                     if (isButtonActive.value) R.drawable.x_circle else R.drawable.plus_circle
                 Icon(
@@ -379,7 +306,85 @@ fun HomeView() {
                         .height(40.dp)
                 )
             }
+
+            if (isButtonActive.value) {
+                Popup(
+                    alignment = Alignment.TopEnd,
+                    offset = IntOffset(-75, -355)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .background(Color.AlmondCream)
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.cow),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(24.dp)
+                                    .height(24.dp)
+                            )
+                            Text(
+                                "Animal", fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.megaphone),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(24.dp)
+                                    .height(24.dp)
+                            )
+                            Text(
+                                "Campaign", fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.resource_package),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(24.dp)
+                                    .height(24.dp)
+                            )
+                            Text(
+                                "Inventory", fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.barn),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(24.dp)
+                                    .height(24.dp)
+                            )
+                            Text(
+                                "Barn", fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
-
 }
