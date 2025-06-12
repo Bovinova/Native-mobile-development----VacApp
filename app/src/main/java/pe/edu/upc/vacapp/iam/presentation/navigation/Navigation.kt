@@ -9,13 +9,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import pe.edu.upc.vacapp.iam.presentation.di.PresentationModule
 import pe.edu.upc.vacapp.iam.presentation.view.Login
+import pe.edu.upc.vacapp.iam.presentation.view.Register
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
+
+    val loginViewModel = PresentationModule.getLoginViewModel()
 
     Scaffold(
         modifier = Modifier.background(Color.LightGray)
@@ -26,9 +30,16 @@ fun Navigation() {
             modifier = Modifier.padding(padding)
         ) {
             composable("login") {
-                Login()
+                Login(loginViewModel) {
+                    navController.navigate("register")
+                }
             }
 
+            composable("register") {
+                Register(loginViewModel) {
+                    navController.navigate("login")
+                }
+            }
         }
     }
 }

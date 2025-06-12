@@ -44,9 +44,9 @@ import pe.edu.upc.vacapp.ui.theme.Color
 
 //@Preview
 @Composable
-fun Login(
-    viewmodel: LoginViewModel,
-    onTapRegister: () -> Unit
+fun Register(
+     viewmodel: LoginViewModel,
+     onTapLogin: () -> Unit
 ) {
     val user = viewmodel.user.collectAsState()
     val showPassword = remember { mutableStateOf(false) }
@@ -73,19 +73,19 @@ fun Login(
         }
 
         Text(
-            "Sign In",
+            "Sign Up",
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 35.dp)
+                .padding(bottom = 22.dp)
         )
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 60.dp),
+                .padding(bottom = 25.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
         ) {
             Button(
@@ -142,10 +142,40 @@ fun Login(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 70.dp),
+                .padding(bottom = 35.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
+            TextField(
+                modifier = Modifier
+                    .width(375.dp)
+                    .height(60.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                    unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                    focusedContainerColor = Color.AlmondCream,
+                    unfocusedContainerColor = Color.AlmondCream
+                ),
+                value = user.value.username,
+                onValueChange = { viewmodel.updateUsername(it) },
+                placeholder = {
+                    Text(
+                        "Name",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.user),
+                        contentDescription = null,
+                        tint = Color.Black
+                    )
+                }
+            )
+
             TextField(
                 modifier = Modifier
                     .width(375.dp)
@@ -235,10 +265,10 @@ fun Login(
                     containerColor = Color.ForestGreen
                 ),
                 shape = RoundedCornerShape(25.dp),
-                onClick = { viewmodel.login() }
+                onClick = { viewmodel.register() }
             ) {
                 Text(
-                    "Sign In",
+                    "Sign Up",
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
@@ -246,10 +276,10 @@ fun Login(
 
             TextButton(onClick = {
                 viewmodel.clearUser()
-                onTapRegister()
+                onTapLogin()
             }) {
                 Text(
-                    "Create account",
+                    "I have account",
                     color = Color.Black,
                     fontWeight = FontWeight.Medium,
                     fontStyle = FontStyle.Italic,
