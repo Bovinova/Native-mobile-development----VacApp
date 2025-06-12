@@ -1,10 +1,10 @@
 package pe.edu.upc.vacapp.iam.presentation.di
 
 import pe.edu.upc.vacapp.iam.data.di.DataModule.getAuthRepository
-import pe.edu.upc.vacapp.iam.presentation.viewmodel.LoginViewModel
+import pe.edu.upc.vacapp.iam.presentation.viewmodel.AuthViewModel
 
 object PresentationModule {
-    fun getLoginViewModel(): LoginViewModel {
-        return LoginViewModel(getAuthRepository())
+    fun getAuthViewModel(): AuthViewModel {
+        return AuthViewModel(getAuthRepository())
     }
 }

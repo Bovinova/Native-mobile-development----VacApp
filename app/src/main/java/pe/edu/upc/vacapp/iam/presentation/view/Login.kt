@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -33,19 +32,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import pe.edu.upc.vacapp.R
-import pe.edu.upc.vacapp.iam.domain.model.User
-import pe.edu.upc.vacapp.iam.presentation.viewmodel.LoginViewModel
+import pe.edu.upc.vacapp.iam.presentation.viewmodel.AuthViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
 
 //@Preview
 @Composable
 fun Login(
-    viewmodel: LoginViewModel,
+    viewmodel: AuthViewModel,
     onTapRegister: () -> Unit
 ) {
     val user = viewmodel.user.collectAsState()
