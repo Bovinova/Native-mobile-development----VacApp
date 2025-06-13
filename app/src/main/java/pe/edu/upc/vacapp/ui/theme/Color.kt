@@ -16,4 +16,6 @@ object Color {
     val AlmondCream = Color(0xFFF6E7C1)
     val Green = Color(0xFF4B6861)
     val Black = Color(0xFF000000)
+    val White = Color(0xFFFFFFFf)
+    val Transparent = Color.Transparent
 }

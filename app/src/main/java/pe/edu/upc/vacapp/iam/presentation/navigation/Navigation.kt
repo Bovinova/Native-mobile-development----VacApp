@@ -50,8 +50,7 @@ fun Navigation() {
             }
 
             composable("home") {
-                Button(onClick = { authViewModel.logout() }) { }
-                Text("Home Screen") // Placeholder for home screen
+                pe.edu.upc.vacapp.home.presentation.navigation.Navigation()
             }
         }
     }
