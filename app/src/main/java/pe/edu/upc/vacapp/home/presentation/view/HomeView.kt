@@ -311,7 +311,8 @@ fun HomeView() {
                 Popup(
                     alignment = Alignment.TopEnd,
                     offset = IntOffset(-75, -355)
-                ) {
+                )
+                {
                     Column(
                         modifier = Modifier
                             .background(Color.AlmondCream)
