@@ -19,6 +19,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,10 +44,19 @@ import pe.edu.upc.vacapp.ui.theme.Color
 @Composable
 fun Login(
     viewmodel: AuthViewModel,
-    onTapRegister: () -> Unit
+    onLoginSuccess: () -> Unit,
+    goToRegister: () -> Unit
 ) {
     val user = viewmodel.user.collectAsState()
+    val loginSuccess = viewmodel.loginSuccess.collectAsState()
     val showPassword = remember { mutableStateOf(false) }
+
+    LaunchedEffect(loginSuccess.value) {
+        if (loginSuccess.value == true) {
+            onLoginSuccess()
+            viewmodel.resetLoginSuccess()
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -243,7 +253,7 @@ fun Login(
 
             TextButton(onClick = {
                 viewmodel.clearUser()
-                onTapRegister()
+                goToRegister()
             }) {
                 Text(
                     "Create account",

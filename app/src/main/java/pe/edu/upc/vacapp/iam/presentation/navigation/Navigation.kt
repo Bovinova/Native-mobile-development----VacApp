@@ -11,23 +11,26 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import pe.edu.upc.vacapp.iam.presentation.di.PresentationModule
 import pe.edu.upc.vacapp.iam.presentation.view.Login
 import pe.edu.upc.vacapp.iam.presentation.view.Register
+import pe.edu.upc.vacapp.shared.data.local.JwtStorage
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-
     val authViewModel = PresentationModule.getAuthViewModel()
+    val isLoggedIn = remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
-        authViewModel.verifyLogIn()
+        isLoggedIn.value = JwtStorage.getToken() != null
     }
-    val isLoggedIn = authViewModel.isLoggedIn.collectAsState()
 
     Scaffold(
         modifier = Modifier.background(Color.LightGray)
@@ -38,19 +41,35 @@ fun Navigation() {
             modifier = Modifier.padding(padding)
         ) {
             composable("login") {
-                Login(authViewModel) {
-                    navController.navigate("register")
-                }
+                Login(
+                    authViewModel,
+                    goToRegister = { navController.navigate("register") },
+                    onLoginSuccess = {
+                        navController.navigate("home") {
+                            popUpTo(0) { inclusive = true } // para no regresar
+                        }
+                    }
+                )
             }
 
             composable("register") {
-                Register(authViewModel) {
-                    navController.navigate("login")
-                }
+                Register(
+                    authViewModel,
+                    goToLogin = {
+                        navController.navigate("login") {
+                            popUpTo("register") { inclusive = true }
+                        }
+                    },
+                    onLoginSuccess = {
+                        navController.navigate("home") {
+                            popUpTo(0) { inclusive = true } // para no regresar
+                        }
+                    }
+                )
             }
 
             composable("home") {
-                Button(onClick = { authViewModel.logout() }) { }
+                Button(onClick = { }) { }
                 Text("Home Screen") // Placeholder for home screen
             }
         }
