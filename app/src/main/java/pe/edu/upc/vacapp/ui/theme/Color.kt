@@ -15,5 +15,5 @@ object Color {
     val LightGray = Color(0xFFF2F2F2)
     val AlmondCream = Color(0xFFF6E7C1)
     val Green = Color(0xFF4B6861)
-    val Black = Color (0xFF000000)
+    val Black = Color(0xFF000000)
 }
