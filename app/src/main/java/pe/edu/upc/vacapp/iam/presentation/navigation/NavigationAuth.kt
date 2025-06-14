@@ -20,7 +20,7 @@ import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview
 @Composable
-fun Navigation() {
+fun NavigationAuth() {
     val navController = rememberNavController()
     val authViewModel = PresentationModule.getAuthViewModel()
     val isLoggedIn = remember { mutableStateOf(false) }
