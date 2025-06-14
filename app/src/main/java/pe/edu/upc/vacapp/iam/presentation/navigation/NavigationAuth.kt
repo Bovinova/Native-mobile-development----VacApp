@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -23,7 +22,7 @@ import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview
 @Composable
-fun Navigation() {
+fun NavigationAuth() {
     val navController = rememberNavController()
     val authViewModel = PresentationModule.getAuthViewModel()
     val isLoggedIn = remember { mutableStateOf(false) }
