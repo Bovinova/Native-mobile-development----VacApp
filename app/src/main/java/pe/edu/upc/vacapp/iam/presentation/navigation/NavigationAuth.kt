@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import pe.edu.upc.vacapp.home.presentation.navigation.Navigation
 import pe.edu.upc.vacapp.iam.presentation.di.PresentationModule
 import pe.edu.upc.vacapp.iam.presentation.view.Login
 import pe.edu.upc.vacapp.iam.presentation.view.Register
@@ -61,7 +62,9 @@ fun NavigationAuth() {
                 )
             }
 
-            composable("home") { pe.edu.upc.vacapp.home.presentation.navigation.Navigation() }
+            composable("home") {
+                Navigation()
+            }
         }
     }
 }
