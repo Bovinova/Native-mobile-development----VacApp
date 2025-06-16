@@ -14,8 +14,8 @@ class AuthViewModel(
     private val _user = MutableStateFlow(User())
     val user: StateFlow<User> = _user
 
-    private val _isLoggedIn = MutableStateFlow(false)
-    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
+    private val _loginSuccess = MutableStateFlow<Boolean?>(null)
+    val loginSuccess: StateFlow<Boolean?> = _loginSuccess
 
     fun updateEmail(email: String) {
         _user.value = _user.value.copy(email = email)
@@ -35,27 +35,24 @@ class AuthViewModel(
 
     fun login() {
         viewModelScope.launch {
-            _isLoggedIn.value = authRepository.login(_user.value)
+            _loginSuccess.value = authRepository.login(_user.value)
         }
     }
 
     fun logout() {
         viewModelScope.launch {
             authRepository.logout()
-            _isLoggedIn.value = false
             clearUser()
         }
     }
 
     fun register() {
         viewModelScope.launch {
-            _isLoggedIn.value = authRepository.register(_user.value)
+            _loginSuccess.value = authRepository.register(_user.value)
         }
     }
 
-    fun verifyLogIn() {
-        viewModelScope.launch {
-            _isLoggedIn.value = authRepository.isLoggedIn()
-        }
+    fun resetLoginSuccess() {
+        _loginSuccess.value = null
     }
 }
