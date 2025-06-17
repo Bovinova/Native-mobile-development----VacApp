@@ -17,11 +17,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import pe.edu.upc.vacapp.campaign.domain.model.Campaign
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Composable
 @Preview
-fun CardCampaignView() {
+fun CardCampaignView(
+    campaign: Campaign = Campaign()
+) {
     Card(
         modifier = Modifier
             .width(380.dp)
@@ -40,7 +43,7 @@ fun CardCampaignView() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                "Bovine Brucellosis",
+                campaign.name,
                 fontWeight = FontWeight.Medium,
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
@@ -57,7 +60,7 @@ fun CardCampaignView() {
                     fontSize = 20.sp
                 )
                 Text(
-                    "Cattle vaccination",
+                    campaign.description,
                     fontWeight = FontWeight.Light,
                     fontSize = 20.sp
                 )
@@ -68,12 +71,12 @@ fun CardCampaignView() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    "Date:",
+                    "Start Date:",
                     fontWeight = FontWeight.Normal,
                     fontSize = 20.sp
                 )
                 Text(
-                    "09/05/2025",
+                    campaign.startdate,
                     fontWeight = FontWeight.Light,
                     fontSize = 20.sp
                 )
@@ -89,7 +92,7 @@ fun CardCampaignView() {
                     fontSize = 20.sp
                 )
                 Text(
-                    "20/06/2025",
+                    campaign.enddate,
                     fontWeight = FontWeight.Light,
                     fontSize = 20.sp
                 )

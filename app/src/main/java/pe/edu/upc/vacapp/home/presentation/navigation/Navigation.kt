@@ -1,6 +1,7 @@
 package pe.edu.upc.vacapp.home.presentation.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import pe.edu.upc.vacapp.R
+import pe.edu.upc.vacapp.campaign.presentation.di.PresentacionModel.getCampaignViewModel
+import pe.edu.upc.vacapp.campaign.presentation.view.CampaignView
+import pe.edu.upc.vacapp.campaign.presentation.view.FormCampaignView
 import pe.edu.upc.vacapp.home.presentation.view.HomeView
 import pe.edu.upc.vacapp.ui.theme.Color
 
@@ -44,7 +48,12 @@ fun Navigation() {
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         scrimColor = Color.Transparent,
-        drawerContent = { DrawerList() },
+        drawerContent = {
+            DrawerList(
+                ontapCampaign = { navController.navigate("campaign") },
+                ontapHome = { navController.navigate("home") }
+            )
+        },
         drawerState = drawerState
     ) {
         Scaffold(
@@ -65,8 +74,21 @@ fun Navigation() {
                 modifier = Modifier.padding(padding)
             ) {
                 composable("home") {
-                    HomeView()
+                    HomeView(ontapAddCampaign = { navController.navigate("addcampaign") })
                 }
+                composable("campaign") {
+                    val viewmodel = getCampaignViewModel()
+                    viewmodel.getCampaing()
+                    CampaignView(viewmodel)
+                }
+                composable("addcampaign") {
+                    val viewmodel = getCampaignViewModel()
+                    FormCampaignView(
+                        goHome = { navController.navigate("home") },
+                        viewModel = viewmodel
+                    )
+                }
+
             }
 
 
@@ -76,7 +98,10 @@ fun Navigation() {
 
 @Preview
 @Composable
-fun DrawerList() {
+fun DrawerList(
+    ontapCampaign: () -> Unit = {},
+    ontapHome: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .padding(top = 45.dp)
@@ -94,6 +119,7 @@ fun DrawerList() {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { ontapHome() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.house),
@@ -128,6 +154,7 @@ fun DrawerList() {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { ontapCampaign() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.megaphone),
