@@ -1,6 +1,7 @@
 package pe.edu.upc.vacapp.home.presentation.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,9 +35,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import pe.edu.upc.vacapp.R
+import pe.edu.upc.vacapp.animal.domain.model.Animal
+import pe.edu.upc.vacapp.animal.presentation.di.PresentationModule.getAnimalViewModel
+import pe.edu.upc.vacapp.animal.presentation.view.AddAnimalForm
+import pe.edu.upc.vacapp.animal.presentation.view.AnimalCardList
+import pe.edu.upc.vacapp.animal.presentation.view.AnimalDetails
 import pe.edu.upc.vacapp.home.presentation.view.HomeView
 import pe.edu.upc.vacapp.ui.theme.Color
-
 
 @Preview
 @Composable
@@ -42,9 +49,15 @@ fun Navigation() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
+    val selectedAnimal = remember { mutableStateOf<Animal?>(null) }
+
     ModalNavigationDrawer(
         scrimColor = Color.Transparent,
-        drawerContent = { DrawerList() },
+        drawerContent = {
+            DrawerList(
+                onTapAnimal = { navController.navigate("animals") }
+            )
+        },
         drawerState = drawerState
     ) {
         Scaffold(
@@ -65,18 +78,38 @@ fun Navigation() {
                 modifier = Modifier.padding(padding)
             ) {
                 composable("home") {
-                    HomeView()
+                    HomeView(
+                        onTapAnimal = { navController.navigate("add-animal") }
+                    )
+                }
+
+                composable("animals") {
+                    val viewmodel = getAnimalViewModel()
+                    viewmodel.getAllAnimals()
+                    AnimalCardList(viewmodel) {
+                        selectedAnimal.value = it
+                        navController.navigate("animal-details")
+                    }
+                }
+
+                composable("animal-details") {
+                    AnimalDetails(selectedAnimal.value!!)
+                }
+
+                composable("add-animal") {
+                    val viewmodel = getAnimalViewModel()
+                    AddAnimalForm(viewmodel)
                 }
             }
-
-
         }
     }
 }
 
 @Preview
 @Composable
-fun DrawerList() {
+fun DrawerList(
+    onTapAnimal: () -> Unit = {},
+) {
     Column(
         modifier = Modifier
             .padding(top = 45.dp)
@@ -112,6 +145,7 @@ fun DrawerList() {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { onTapAnimal() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.cow),
