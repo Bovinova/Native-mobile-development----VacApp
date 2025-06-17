@@ -33,6 +33,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import pe.edu.upc.vacapp.R
+import pe.edu.upc.vacapp.barn.presentation.di.PresentationModel.getBarnViewModel
+import pe.edu.upc.vacapp.barn.presentation.view.AddBarnView
+import pe.edu.upc.vacapp.barn.presentation.view.BarnView
 import pe.edu.upc.vacapp.campaign.presentation.di.PresentacionModel.getCampaignViewModel
 import pe.edu.upc.vacapp.campaign.presentation.view.CampaignView
 import pe.edu.upc.vacapp.campaign.presentation.view.FormCampaignView
@@ -51,7 +54,8 @@ fun Navigation() {
         drawerContent = {
             DrawerList(
                 ontapCampaign = { navController.navigate("campaign") },
-                ontapHome = { navController.navigate("home") }
+                ontapHome = { navController.navigate("home") },
+                ontapBarn = { navController.navigate("barn") }
             )
         },
         drawerState = drawerState
@@ -74,7 +78,10 @@ fun Navigation() {
                 modifier = Modifier.padding(padding)
             ) {
                 composable("home") {
-                    HomeView(ontapAddCampaign = { navController.navigate("addcampaign") })
+                    HomeView(
+                        ontapAddCampaign = { navController.navigate("addcampaign") },
+                        ontapAddBarn = { navController.navigate("addbarn") },
+                    )
                 }
                 composable("campaign") {
                     val viewmodel = getCampaignViewModel()
@@ -89,6 +96,17 @@ fun Navigation() {
                     )
                 }
 
+                composable("barn") {
+                    val viewmodel = getBarnViewModel()
+                    viewmodel.getBarns()
+                    BarnView(viewmodel)
+                }
+
+                composable("addbarn") {
+                    val viewmodel = getBarnViewModel()
+                    AddBarnView(viewmodel)
+                }
+
             }
 
 
@@ -100,7 +118,8 @@ fun Navigation() {
 @Composable
 fun DrawerList(
     ontapCampaign: () -> Unit = {},
-    ontapHome: () -> Unit = {}
+    ontapHome: () -> Unit = {},
+    ontapBarn: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -187,6 +206,7 @@ fun DrawerList(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { ontapBarn() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.barn),

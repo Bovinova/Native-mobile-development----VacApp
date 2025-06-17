@@ -1,4 +1,5 @@
 package pe.edu.upc.vacapp.barn.presentation.view
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,13 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pe.edu.upc.vacapp.R
@@ -31,10 +32,10 @@ import pe.edu.upc.vacapp.ui.theme.Color
 
 @Composable
 
-fun FormBarnView (
+fun FormBarnView(
     viewModel: BarnViewModel
 ) {
-    val barn = remember { mutableSetOf(Barn()) }
+    val barn = remember { mutableStateOf(Barn()) }
     Card(
         modifier = Modifier
             .width(356.dp)
@@ -61,22 +62,39 @@ fun FormBarnView (
                 ),
                 value = barn.value.name,
                 onValueChange = {
-                    barn.value = barn.value.
+                    barn.value = barn.value.copy(name = it)
                 },
                 label = {
-                    Text( "Name",
+                    Text(
+                        "Name",
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 40.sp)
+                        fontSize = 40.sp
+                    )
                 }
 
             )
 
 
 
-            Text(
-                "Limit",
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 40.sp
+            TextField(
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.Black
+                ),
+                value = barn.value.limit,
+                onValueChange = {
+                    barn.value = barn.value.copy(limit = it)
+                },
+                label = {
+                    Text(
+                        "Limit",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 40.sp
+                    )
+                }
+
             )
 
 
@@ -96,7 +114,7 @@ fun FormBarnView (
                     )
                 }
                 IconButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { viewModel.addBarn(barn.value) }
                 ) {
                     Icon(
                         painterResource(R.drawable.check_circle), null,
