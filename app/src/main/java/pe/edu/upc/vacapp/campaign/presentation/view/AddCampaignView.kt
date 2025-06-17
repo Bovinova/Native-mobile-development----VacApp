@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.campaign.presentation.view
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -19,14 +22,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
 import pe.edu.upc.vacapp.campaign.presentation.viewmodel.CampaignViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
+import java.util.Calendar
 
 @Composable
 
@@ -97,53 +104,22 @@ fun AddCampaignView(
                 }
 
             )
-            TextField(
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Black,
-                    unfocusedIndicatorColor = Color.Black
-                ),
-                value = campaign.value.startdate,
-                onValueChange = {
+
+            DatePickerTextField(
+                label = "Start date",
+                date = campaign.value.startdate,
+                onDateChange = {
                     campaign.value = campaign.value.copy(startdate = it)
-                },
-
-                label = {
-                    Text(
-                        "Start date",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 30.sp,
-                        color = Color.Black
-                    )
                 }
-
             )
-            TextField(
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Black,
-                    unfocusedIndicatorColor = Color.Black
-                ),
-                value = campaign.value.enddate,
-                onValueChange = {
+
+            DatePickerTextField(
+                label = "End date",
+                date = campaign.value.enddate,
+                onDateChange = {
                     campaign.value = campaign.value.copy(enddate = it)
-                },
-
-                label = {
-                    Text(
-                        "End date",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 30.sp,
-                        color = Color.Black
-                    )
                 }
-
             )
-
-
-
 
             Row(
                 modifier = Modifier
@@ -175,3 +151,57 @@ fun AddCampaignView(
     }
 }
 
+@Composable
+fun DatePickerTextField(
+    label: String,
+    date: String,
+    onDateChange: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val calendar = Calendar.getInstance()
+
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                onDateChange(selectedDate.format(formatter))
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        value = date,
+        onValueChange = { },
+        readOnly = true,
+        label = {
+            Text(
+                label,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 30.sp,
+                color = Color.Black
+            )
+        },
+        trailingIcon = {
+            IconButton(onClick = { datePickerDialog.show() }) {
+                Icon(
+                    imageVector = Icons.Default.CalendarToday,
+                    contentDescription = "Pick Date"
+                )
+            }
+        },
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Black,
+            unfocusedIndicatorColor = Color.Black
+        )
+    )
+}
