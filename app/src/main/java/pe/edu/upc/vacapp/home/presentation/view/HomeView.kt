@@ -2,6 +2,7 @@ package pe.edu.upc.vacapp.home.presentation.view
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,9 @@ import pe.edu.upc.vacapp.ui.theme.Color
 
 @Composable
 @Preview
-fun HomeView() {
+fun HomeView(
+    ontapAddCampaign: () -> Unit = {},
+) {
     val isButtonActive = remember { mutableStateOf(false) }
 
     Column(
@@ -338,6 +341,7 @@ fun HomeView() {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.clickable { ontapAddCampaign() }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.megaphone),
