@@ -41,6 +41,7 @@ import pe.edu.upc.vacapp.ui.theme.Color
 fun HomeView(
         ontapAddCampaign: () -> Unit = {},
         onTapAnimal: () -> Unit = {},
+    ontapAddBarn: () -> Unit = {},
 ) {
     val isButtonActive = remember { mutableStateOf(false) }
 
@@ -323,6 +324,7 @@ fun HomeView(
                         Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.clickable { ontapAddBarn() }
                         ) {
                             Icon(
                                     painter = painterResource(R.drawable.barn),

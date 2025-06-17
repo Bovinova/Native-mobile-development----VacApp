@@ -40,6 +40,9 @@ import pe.edu.upc.vacapp.animal.presentation.di.PresentationModule.getAnimalView
 import pe.edu.upc.vacapp.animal.presentation.view.AddAnimalForm
 import pe.edu.upc.vacapp.animal.presentation.view.AnimalCardList
 import pe.edu.upc.vacapp.animal.presentation.view.AnimalDetails
+import pe.edu.upc.vacapp.barn.presentation.di.PresentationModel.getBarnViewModel
+import pe.edu.upc.vacapp.barn.presentation.view.AddBarnView
+import pe.edu.upc.vacapp.barn.presentation.view.BarnView
 import pe.edu.upc.vacapp.campaign.presentation.di.PresentacionModel.getCampaignViewModel
 import pe.edu.upc.vacapp.campaign.presentation.view.CampaignView
 import pe.edu.upc.vacapp.campaign.presentation.view.FormCampaignView
@@ -60,7 +63,8 @@ fun Navigation() {
                 DrawerList(
                         ontapCampaign = { navController.navigate("campaign") },
                         ontapHome = { navController.navigate("home") },
-                        onTapAnimal = { navController.navigate("animals") }
+                        onTapAnimal = { navController.navigate("animals") },
+                ontapBarn = { navController.navigate("barn") }
                 )
             },
             drawerState = drawerState
@@ -77,7 +81,10 @@ fun Navigation() {
             ) {
                 composable("home") {
                     HomeView(
-                            ontapAddCampaign = { navController.navigate("addcampaign") },
+                            
+                        ontapAddCampaign = { navController.navigate("addcampaign") },
+                        ontapAddBarn = { navController.navigate("addbarn") },
+                    ,
                             onTapAnimal = { navController.navigate("add-animal") }
                     )
                 }
@@ -92,6 +99,17 @@ fun Navigation() {
                             goHome = { navController.navigate("home") },
                             viewModel = viewmodel
                     )
+                }
+
+                composable("barn") {
+                    val viewmodel = getBarnViewModel()
+                    viewmodel.getBarns()
+                    BarnView(viewmodel)
+                }
+
+                composable("addbarn") {
+                    val viewmodel = getBarnViewModel()
+                    AddBarnView(viewmodel)
                 }
 
                 composable("animals") {
@@ -119,7 +137,8 @@ fun Navigation() {
 fun DrawerList(
         ontapCampaign: () -> Unit = {},
         ontapHome: () -> Unit = {},
-        onTapAnimal: () -> Unit = {},
+        onTapAnimal: () -> Unit = {},,
+    ontapBarn: () -> Unit = {}
 ) {
     Column(
             modifier =
@@ -203,6 +222,7 @@ fun DrawerList(
             Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { ontapBarn() }
             ) {
                 Icon(
                         painter = painterResource(R.drawable.barn),
