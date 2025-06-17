@@ -58,35 +58,29 @@ fun Navigation() {
     val selectedAnimal = remember { mutableStateOf<Animal?>(null) }
 
     ModalNavigationDrawer(
-            scrimColor = Color.Transparent,
-            drawerContent = {
-                DrawerList(
-                        ontapCampaign = { navController.navigate("campaign") },
-                        ontapHome = { navController.navigate("home") },
-                        onTapAnimal = { navController.navigate("animals") },
-                ontapBarn = { navController.navigate("barn") }
-                )
-            },
-            drawerState = drawerState
+        scrimColor = Color.Transparent, drawerContent = {
+            DrawerList(
+                ontapCampaign = { navController.navigate("campaign") },
+                ontapHome = { navController.navigate("home") },
+                onTapAnimal = { navController.navigate("animals") },
+                ontapBarn = { navController.navigate("barn") })
+        }, drawerState = drawerState
     ) {
         Scaffold(
-                topBar = { TopBarHome(openmenu = { scope.launch { drawerState.open() } }) },
-                containerColor = Color.LightGray,
-                modifier = Modifier.fillMaxSize()
+            topBar = { TopBarHome(openmenu = { scope.launch { drawerState.open() } }) },
+            containerColor = Color.LightGray,
+            modifier = Modifier.fillMaxSize()
         ) { padding ->
             NavHost(
-                    navController,
-                    startDestination = "home",
-                    modifier = Modifier.padding(padding)
+                navController, startDestination = "home", modifier = Modifier.padding(padding)
             ) {
                 composable("home") {
                     HomeView(
-                            
+
                         ontapAddCampaign = { navController.navigate("addcampaign") },
                         ontapAddBarn = { navController.navigate("addbarn") },
-                    ,
-                            onTapAnimal = { navController.navigate("add-animal") }
-                    )
+
+                        onTapAnimal = { navController.navigate("add-animal") })
                 }
                 composable("campaign") {
                     val viewmodel = getCampaignViewModel()
@@ -96,8 +90,7 @@ fun Navigation() {
                 composable("addcampaign") {
                     val viewmodel = getCampaignViewModel()
                     FormCampaignView(
-                            goHome = { navController.navigate("home") },
-                            viewModel = viewmodel
+                        goHome = { navController.navigate("home") }, viewModel = viewmodel
                     )
                 }
 
@@ -135,136 +128,128 @@ fun Navigation() {
 @Preview
 @Composable
 fun DrawerList(
-        ontapCampaign: () -> Unit = {},
-        ontapHome: () -> Unit = {},
-        onTapAnimal: () -> Unit = {},,
+    ontapCampaign: () -> Unit = {},
+    ontapHome: () -> Unit = {},
+    onTapAnimal: () -> Unit = {},
     ontapBarn: () -> Unit = {}
 ) {
     Column(
-            modifier =
-                    Modifier.padding(top = 45.dp)
-                            .background(Color.Green)
-                            .fillMaxHeight()
-                            .width(185.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier
+            .padding(top = 45.dp)
+            .background(Color.Green)
+            .fillMaxHeight()
+            .width(185.dp), verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
-                modifier = Modifier.padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(30.dp),
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(30.dp),
         ) {
             Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.clickable { ontapHome() }
-            ) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { ontapHome() }) {
                 Icon(
-                        painter = painterResource(R.drawable.house),
-                        tint = Color.White,
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
+                    painter = painterResource(R.drawable.house),
+                    tint = Color.White,
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
                 )
                 Text("Home", fontWeight = FontWeight.Normal, fontSize = 20.sp, color = Color.White)
             }
 
             Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.clickable { onTapAnimal() }
-            ) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { onTapAnimal() }) {
                 Icon(
-                        painter = painterResource(R.drawable.cow),
-                        tint = Color.White,
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
+                    painter = painterResource(R.drawable.cow),
+                    tint = Color.White,
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
                 )
                 Text(
-                        "Animal",
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 20.sp,
-                        color = Color.White
+                    "Animal", fontWeight = FontWeight.Normal, fontSize = 20.sp, color = Color.White
                 )
             }
             Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.clickable { ontapCampaign() }
-            ) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { ontapCampaign() }) {
                 Icon(
-                        painter = painterResource(R.drawable.megaphone),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(30.dp)
+                    painter = painterResource(R.drawable.megaphone),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
                 )
                 Text(
-                        "Campaign",
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 20.sp,
-                        color = Color.White
+                    "Campaign",
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White
                 )
             }
             Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Icon(
-                        painter = painterResource(R.drawable.resource_package),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(30.dp),
+                    painter = painterResource(R.drawable.resource_package),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp),
                 )
                 Text(
-                        "Inventory",
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 20.sp,
-                        color = Color.White
+                    "Inventory",
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White
                 )
             }
             Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.clickable { ontapBarn() }
-            ) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { ontapBarn() }) {
                 Icon(
-                        painter = painterResource(R.drawable.barn),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(30.dp)
+                    painter = painterResource(R.drawable.barn),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
                 )
                 Text("Barn", fontWeight = FontWeight.Normal, fontSize = 20.sp, color = Color.White)
             }
         }
 
         Column(
-                modifier = Modifier.padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Icon(
-                        painter = painterResource(R.drawable.gear),
-                        tint = Color.White,
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
+                    painter = painterResource(R.drawable.gear),
+                    tint = Color.White,
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
                 )
                 Text(
-                        "Settings",
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 20.sp,
-                        color = Color.White
+                    "Settings",
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White
                 )
             }
 
             Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Icon(
-                        painter = painterResource(R.drawable.sign_out),
-                        tint = Color.White,
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
+                    painter = painterResource(R.drawable.sign_out),
+                    tint = Color.White,
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
                 )
                 Text("Exit", fontWeight = FontWeight.Normal, fontSize = 20.sp, color = Color.White)
             }
@@ -275,13 +260,20 @@ fun DrawerList(
 @Preview
 @Composable
 fun TopBarHome(openmenu: () -> Unit = {}) {
-    Row(modifier = Modifier.fillMaxWidth().background(Color.Green).height(50.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Green)
+            .height(50.dp)
+    ) {
         IconButton(onClick = { openmenu() }) {
             Icon(
-                    painter = painterResource(R.drawable.list),
-                    contentDescription = null,
-                    modifier = Modifier.width(40.dp).height(40.dp),
-                    tint = Color.LightGray
+                painter = painterResource(R.drawable.list),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(40.dp),
+                tint = Color.LightGray
             )
         }
     }
