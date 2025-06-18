@@ -237,7 +237,7 @@ fun Register(
                             showPassword.value = !showPassword.value
                         }
                     ) {
-                        val icon = if (showPassword.value) R.drawable.eye else R.drawable.eye_slash
+                        val icon = if (showPassword.value) R.drawable.eye_slash else R.drawable.eye
                         Icon(
                             painterResource(icon), null,
                             tint = Color.Black

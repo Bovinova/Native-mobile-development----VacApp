@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.campaign.data.remote
 
+import pe.edu.upc.vacapp.barn.data.model.BarnResponse
 import pe.edu.upc.vacapp.campaign.data.model.CampaignResponse
 import pe.edu.upc.vacapp.campaign.data.model.CreateCampaignRequest
 import retrofit2.Response
@@ -17,4 +18,6 @@ interface CampaignService {
     @GET("campaign/all-campaigns")
     suspend fun getCampaign(): Response<List<CampaignResponse>>
 
+    @GET("stables")
+    suspend fun getBarns(): Response<List<BarnResponse>>
 }

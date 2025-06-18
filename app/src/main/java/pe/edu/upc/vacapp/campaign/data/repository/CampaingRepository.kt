@@ -3,6 +3,7 @@ package pe.edu.upc.vacapp.campaign.data.repository
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import pe.edu.upc.vacapp.barn.domain.model.Barn
 import pe.edu.upc.vacapp.campaign.data.model.CreateCampaignRequest
 import pe.edu.upc.vacapp.campaign.data.remote.CampaignService
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
@@ -28,6 +29,18 @@ class CampaingRepository(
 
             return@withContext response.body()?.map {
                 it.toCampaign()
+            } ?: emptyList()
+        }
+
+        return@withContext emptyList()
+    }
+
+    suspend fun getBarns(): List<Barn> = withContext(Dispatchers.IO) {
+        val response = campaignService.getBarns()
+
+        if (response.isSuccessful) {
+            return@withContext response.body()?.map {
+                it.toBarn()
             } ?: emptyList()
         }
 

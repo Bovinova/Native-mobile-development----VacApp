@@ -5,4 +5,5 @@ data class Campaign(
     val description: String = "",
     val startdate: String = "",
     val enddate: String = "",
+    val barnId: Int = 0,
 )

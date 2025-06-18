@@ -29,7 +29,7 @@ data class CreateCampaignRequest(
                 status = "",
                 goals = emptyList<Any>(),
                 channels = emptyList<Any>(),
-                stableId = 1
+                stableId = c.barnId
             )
 
         }
