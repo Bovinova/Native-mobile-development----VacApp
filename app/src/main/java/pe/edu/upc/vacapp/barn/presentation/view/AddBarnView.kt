@@ -17,7 +17,8 @@ import pe.edu.upc.vacapp.ui.theme.Color
 @Composable
 
 fun AddBarnView(
-    viewModel: BarnViewModel
+    viewModel: BarnViewModel,
+    goHome: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -31,7 +32,7 @@ fun AddBarnView(
             color = Color.Black,
             textAlign = TextAlign.Center
         )
-        FormBarnView(viewModel)
+        FormBarnView(viewModel, goHome = { goHome() })
 
     }
 }

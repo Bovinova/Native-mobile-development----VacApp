@@ -124,7 +124,12 @@ fun Navigation(
                 composable("addcampaign") {
                     val viewmodel = getCampaignViewModel()
                     FormCampaignView(
-                        goHome = { navController.navigate("home") }, viewModel = viewmodel
+                        goHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }, viewModel = viewmodel
                     )
                 }
 
@@ -136,7 +141,15 @@ fun Navigation(
 
                 composable("addbarn") {
                     val viewmodel = getBarnViewModel()
-                    AddBarnView(viewmodel)
+                    AddBarnView(
+                        viewmodel,
+                        goHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
 
                 composable("animals") {
@@ -148,11 +161,22 @@ fun Navigation(
                     }
                 }
 
-                composable("animal-details") { AnimalDetails(selectedAnimal.value!!) }
+                composable("animal-details") {
+                    AnimalDetails(selectedAnimal.value!!)
+                }
 
                 composable("add-animal") {
                     val viewmodel = getAnimalViewModel()
-                    AddAnimalForm(viewmodel)
+                    viewmodel.getBarns()
+                    AddAnimalForm(
+                        viewmodel,
+                        goHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -287,7 +311,12 @@ fun DrawerList(
                     contentDescription = null,
                     modifier = Modifier.size(30.dp)
                 )
-                Text("Log Out", fontWeight = FontWeight.Normal, fontSize = 20.sp, color = Color.White)
+                Text(
+                    "Log Out",
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color.White
+                )
             }
         }
     }

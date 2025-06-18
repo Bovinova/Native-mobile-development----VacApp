@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +18,18 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -44,6 +49,7 @@ import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.animal.domain.model.Animal
 import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
 import pe.edu.upc.vacapp.animal.presentation.viewmodel.AnimalViewModel
+import pe.edu.upc.vacapp.barn.domain.model.Barn
 import pe.edu.upc.vacapp.ui.theme.Color
 import java.io.File
 import java.util.Calendar
@@ -51,7 +57,8 @@ import java.util.Calendar
 //@Preview(showBackground = true)
 @Composable
 fun AddAnimalForm(
-    viewmodel: AnimalViewModel
+    viewmodel: AnimalViewModel,
+    goHome: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -65,19 +72,21 @@ fun AddAnimalForm(
             modifier = Modifier.padding(bottom = 40.dp)
         )
 
-        AddAnimalCard(viewmodel)
+        AddAnimalCard(viewmodel, goHome = { goHome() })
     }
 }
 
 //@Preview
 @Composable
 fun AddAnimalCard(
-    viewmodel: AnimalViewModel
+    viewmodel: AnimalViewModel,
+    goHome: () -> Unit
 ) {
     val context = LocalContext.current
     val imageUri = remember { mutableStateOf<Uri?>(null) }
     val imageFile = remember { mutableStateOf<File?>(null) }
     val newAnimal = remember { mutableStateOf(Animal()) }
+    val barns = viewmodel.barn.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -198,20 +207,16 @@ fun AddAnimalCard(
                         Alignment.CenterHorizontally
                     )
                 ) {
-                    TextField(
-                        modifier = Modifier.weight(1f),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                        ),
-                        value = newAnimal.value.barnId.toString(),
-                        label = { Text("Barn") },
-                        onValueChange = { newBarnIdString ->
-                            newAnimal.value = newAnimal.value.copy(
-                                barnId = newBarnIdString.toIntOrNull() ?: newAnimal.value.barnId
-                            )
-                        }
-                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        DropdownSelector(
+                            label = "Barn",
+                            items = barns.value,
+                            onItemSelected = { barn ->
+                                newAnimal.value = newAnimal.value.copy(barnId = barn.id)
+                            }
+                        )
+                    }
+
                     TextField(
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
@@ -232,7 +237,7 @@ fun AddAnimalCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { goHome() }
                 ) {
                     Icon(
                         painterResource(R.drawable.x_circle),
@@ -330,4 +335,55 @@ fun DatePickerTextField(
             unfocusedContainerColor = Color.Transparent,
         )
     )
+}
+
+
+@Composable
+fun DropdownSelector(
+    label: String,
+    items: List<Barn>,
+    onItemSelected: (Barn) -> Unit
+) {
+    val expanded = remember { mutableStateOf(false) }
+    val selectedItem = remember { mutableStateOf<Barn?>(null) }
+
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        TextField(
+            value = selectedItem.value?.name ?: "",
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "Dropdown",
+                    modifier = Modifier.clickable { expanded.value = true }
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+            )
+        )
+
+        DropdownMenu(
+            expanded = expanded.value,
+            onDismissRequest = { expanded.value = false }
+        ) {
+            items.forEach { item ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedItem.value = item
+                        expanded.value = false
+                        onItemSelected(selectedItem.value!!)
+                    },
+                    text = { Text(text = item.name) }
+                )
+            }
+        }
+    }
 }
