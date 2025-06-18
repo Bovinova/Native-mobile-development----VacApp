@@ -9,6 +9,7 @@ data class BarnResponse(
 ) {
     fun toBarn(): Barn {
         return Barn(
+            id= id,
             name = name,
             limit = limit.toString()
         )
