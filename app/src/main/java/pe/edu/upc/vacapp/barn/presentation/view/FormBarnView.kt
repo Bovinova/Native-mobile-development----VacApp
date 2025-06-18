@@ -33,7 +33,8 @@ import pe.edu.upc.vacapp.ui.theme.Color
 @Composable
 
 fun FormBarnView(
-    viewModel: BarnViewModel
+    viewModel: BarnViewModel,
+    goHome:() ->Unit
 ) {
     val barn = remember { mutableStateOf(Barn()) }
     Card(
@@ -105,7 +106,7 @@ fun FormBarnView(
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { goHome() }
                 ) {
                     Icon(
                         painterResource(R.drawable.x_circle),
