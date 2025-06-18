@@ -217,7 +217,7 @@ fun Login(
                 },
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.key),
+                        painter = painterResource(id = R.drawable.lock_key),
                         contentDescription = null,
                         tint = Color.Black
                     )

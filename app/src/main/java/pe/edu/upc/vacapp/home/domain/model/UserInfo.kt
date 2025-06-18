@@ -1,0 +1,8 @@
+package pe.edu.upc.vacapp.home.domain.model
+
+data class UserInfo(
+    val name: String = "",
+    val totalAnimals: Int = 0,
+    val totalCampaigns: Int = 0,
+    val totalBarns: Int = 0
+)
