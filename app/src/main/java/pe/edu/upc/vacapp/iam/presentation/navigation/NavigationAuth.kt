@@ -30,40 +30,44 @@ fun NavigationAuth() {
 
     Scaffold(modifier = Modifier.background(Color.LightGray)) { padding ->
         NavHost(
-                navController,
-                startDestination = if (isLoggedIn.value) "home" else "login",
-                modifier = Modifier.padding(padding)
+            navController,
+            startDestination = if (isLoggedIn.value) "home" else "login",
+            modifier = Modifier.padding(padding)
         ) {
             composable("login") {
                 Login(
-                        authViewModel,
-                        goToRegister = { navController.navigate("register") },
-                        onLoginSuccess = {
-                            navController.navigate("home") {
-                                popUpTo(0) { inclusive = true } // para no regresar
-                            }
+                    authViewModel,
+                    goToRegister = { navController.navigate("register") },
+                    onLoginSuccess = {
+                        navController.navigate("home") {
+                            popUpTo(0) { inclusive = true } // para no regresar
                         }
+                    }
                 )
             }
 
             composable("register") {
                 Register(
-                        authViewModel,
-                        goToLogin = {
-                            navController.navigate("login") {
-                                popUpTo("register") { inclusive = true }
-                            }
-                        },
-                        onLoginSuccess = {
-                            navController.navigate("home") {
-                                popUpTo(0) { inclusive = true } // para no regresar
-                            }
+                    authViewModel,
+                    goToLogin = {
+                        navController.navigate("login") {
+                            popUpTo("register") { inclusive = true }
                         }
+                    },
+                    onLoginSuccess = {
+                        navController.navigate("home") {
+                            popUpTo(0) { inclusive = true } // para no regresar
+                        }
+                    }
                 )
             }
 
             composable("home") {
-                Navigation()
+                Navigation(goToLogin = {
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                })
             }
         }
     }

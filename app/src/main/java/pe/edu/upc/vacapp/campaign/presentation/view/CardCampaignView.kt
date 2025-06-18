@@ -1,6 +1,7 @@
 package pe.edu.upc.vacapp.campaign.presentation.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,7 +37,7 @@ fun CardCampaignView(
             contentColor = Color.Black
         )
     ) {
-        androidx.compose.foundation.layout.Column(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp), // Padding interior para dar margen al contenido

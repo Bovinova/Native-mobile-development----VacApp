@@ -19,8 +19,12 @@ data class AnimalResponse(
 ) {
     @SuppressLint("DefaultLocale")
     fun toAnimal(): Animal {
-        val localDateTime =
+        val localDateTime = try {
+            LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+        } catch (e: Exception) {
             LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+        }
+
         val birthDateOnly = localDateTime.toLocalDate()
         val formattedDate = birthDateOnly.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         val today = LocalDate.now()

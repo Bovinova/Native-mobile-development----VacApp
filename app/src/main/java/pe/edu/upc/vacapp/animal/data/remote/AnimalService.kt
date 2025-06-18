@@ -3,6 +3,7 @@ package pe.edu.upc.vacapp.animal.data.remote
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import pe.edu.upc.vacapp.animal.data.model.AnimalResponse
+import pe.edu.upc.vacapp.barn.data.model.BarnResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -33,4 +34,7 @@ interface AnimalService {
 
     @GET("bovines")
     suspend fun getAllAnimals(): Response<List<AnimalResponse>>
+
+    @GET("stables")
+    suspend fun getBarns(): Response<List<BarnResponse>>
 }
