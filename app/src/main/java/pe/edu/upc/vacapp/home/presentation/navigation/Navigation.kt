@@ -46,24 +46,54 @@ import pe.edu.upc.vacapp.barn.presentation.view.BarnView
 import pe.edu.upc.vacapp.campaign.presentation.di.PresentacionModel.getCampaignViewModel
 import pe.edu.upc.vacapp.campaign.presentation.view.CampaignView
 import pe.edu.upc.vacapp.campaign.presentation.view.FormCampaignView
+import pe.edu.upc.vacapp.home.presentation.di.PresentationModule.getHomeViewModel
 import pe.edu.upc.vacapp.home.presentation.view.HomeView
+import pe.edu.upc.vacapp.shared.data.local.JwtStorage
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview
 @Composable
-fun Navigation() {
+fun Navigation(
+    goToLogin: () -> Unit = {}
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
     val selectedAnimal = remember { mutableStateOf<Animal?>(null) }
+    val homeViewModel = getHomeViewModel()
 
     ModalNavigationDrawer(
         scrimColor = Color.Transparent, drawerContent = {
             DrawerList(
-                ontapCampaign = { navController.navigate("campaign") },
-                ontapHome = { navController.navigate("home") },
-                onTapAnimal = { navController.navigate("animals") },
-                ontapBarn = { navController.navigate("barn") })
+                ontapCampaign = {
+                    navController.navigate("campaign") {
+                        popUpTo("home") { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
+                ontapHome = {
+                    navController.navigate("home") {
+                        popUpTo("home") { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
+                onTapAnimal = {
+                    navController.navigate("animals") {
+                        popUpTo("home") { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
+                ontapBarn = {
+                    navController.navigate("barn") {
+                        popUpTo("home") { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
+                onSignOut = {
+                    JwtStorage.clearToken()
+                    goToLogin()
+                }
+            )
         }, drawerState = drawerState
     ) {
         Scaffold(
@@ -75,18 +105,22 @@ fun Navigation() {
                 navController, startDestination = "home", modifier = Modifier.padding(padding)
             ) {
                 composable("home") {
-                    HomeView(
+                    homeViewModel.getUserInfo()
 
+                    HomeView(
+                        viewmodel = homeViewModel,
                         ontapAddCampaign = { navController.navigate("addcampaign") },
                         ontapAddBarn = { navController.navigate("addbarn") },
-
-                        onTapAnimal = { navController.navigate("add-animal") })
+                        onTapAnimal = { navController.navigate("add-animal") }
+                    )
                 }
+
                 composable("campaign") {
                     val viewmodel = getCampaignViewModel()
                     viewmodel.getCampaing()
                     CampaignView(viewmodel)
                 }
+
                 composable("addcampaign") {
                     val viewmodel = getCampaignViewModel()
                     FormCampaignView(
@@ -131,7 +165,8 @@ fun DrawerList(
     ontapCampaign: () -> Unit = {},
     ontapHome: () -> Unit = {},
     onTapAnimal: () -> Unit = {},
-    ontapBarn: () -> Unit = {}
+    ontapBarn: () -> Unit = {},
+    onSignOut: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -244,6 +279,7 @@ fun DrawerList(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { onSignOut() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.sign_out),
@@ -251,7 +287,7 @@ fun DrawerList(
                     contentDescription = null,
                     modifier = Modifier.size(30.dp)
                 )
-                Text("Exit", fontWeight = FontWeight.Normal, fontSize = 20.sp, color = Color.White)
+                Text("Log Out", fontWeight = FontWeight.Normal, fontSize = 20.sp, color = Color.White)
             }
         }
     }

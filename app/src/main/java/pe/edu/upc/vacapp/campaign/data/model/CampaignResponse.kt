@@ -1,6 +1,5 @@
 package pe.edu.upc.vacapp.campaign.data.model
 
-import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
@@ -17,7 +16,7 @@ data class CampaignResponse(
     val stableId: Int,
 ) {
     fun toCampaign(): Campaign {
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
         val startDateTime = LocalDateTime.parse(startDate, dateFormatter)
         val endDateTime = LocalDateTime.parse(endDate, dateFormatter)
         val formattedStartDateTime = startDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
