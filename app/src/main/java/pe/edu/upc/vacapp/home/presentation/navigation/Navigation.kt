@@ -123,6 +123,7 @@ fun Navigation(
 
                 composable("addcampaign") {
                     val viewmodel = getCampaignViewModel()
+                    viewmodel.getBarns()
                     FormCampaignView(
                         goHome = {
                             navController.navigate("home") {
