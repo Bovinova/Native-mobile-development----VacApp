@@ -109,7 +109,8 @@ fun InventoryCard(
                     Text(
                         inventory.name,
                         fontWeight = FontWeight.Light,
-                        fontSize = 28.sp
+                        fontSize = 28.sp,
+                        color = Color.Black
                     )
                 }
 
@@ -131,22 +132,16 @@ fun InventoryCard(
             ) {
                 Column {
                     Text(
-                        "Animal",
+                        "Animal Id",
                         fontWeight = FontWeight.Black,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = Color.Black
                     )
                     Text(
                         inventory.bovineId.toString(),
                         fontWeight = FontWeight.Light,
-                        fontSize = 24.sp
-                    )
-                }
-
-                Column {
-                    Text(
-                        "Weight",
-                        fontWeight = FontWeight.Black,
-                        fontSize = 12.sp
+                        fontSize = 18.sp,
+                        color = Color.Black
                     )
                 }
 
@@ -154,12 +149,14 @@ fun InventoryCard(
                     Text(
                         "Vaccine Type",
                         fontWeight = FontWeight.Black,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = Color.Black
                     )
                     Text(
                         inventory.vaccineType,
                         fontWeight = FontWeight.Light,
-                        fontSize = 24.sp
+                        fontSize = 18.sp,
+                        color = Color.Black
                     )
                 }
             }

@@ -53,6 +53,8 @@ import pe.edu.upc.vacapp.animal.domain.model.Animal
 import pe.edu.upc.vacapp.ui.theme.Color
 import java.io.File
 import java.util.Calendar
+import androidx.compose.ui.text.TextStyle
+
 
 //@Preview(showBackground = true)
 @Composable
@@ -69,7 +71,8 @@ fun AddInventoryForm(
             "Add inventory",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 40.dp)
+            modifier = Modifier.padding(bottom = 40.dp),
+            color = Color.Black,
         )
 
         AddInventoryCard(viewmodel, goHome = { goHome() })
@@ -133,7 +136,8 @@ fun AddInventoryCard(
                 ),
                 label = { Text("Name") },
                 value = newInventory.value.name,
-                onValueChange = { newInventory.value = newInventory.value.copy(name = it) }
+                onValueChange = { newInventory.value = newInventory.value.copy(name = it) },
+                textStyle = TextStyle(color = Color.Black)
             )
 
             Column(
@@ -153,7 +157,8 @@ fun AddInventoryCard(
                         ),
                         value = newInventory.value.vaccineType,
                         label = { Text("Vaccine Type") },
-                        onValueChange = { newInventory.value = newInventory.value.copy(vaccineType = it) }
+                        onValueChange = { newInventory.value = newInventory.value.copy(vaccineType = it) },
+                        textStyle = TextStyle(color = Color.Black)
                     )
                 }
                 Row(
@@ -167,7 +172,8 @@ fun AddInventoryCard(
                         date = newInventory.value.vaccineDate,
                         onDateChange = {
                             newInventory.value = newInventory.value.copy(vaccineDate = it)
-                        }
+                        },
+                        textStyle = TextStyle(color = Color.Black)
                     )
 
                 }
@@ -183,7 +189,8 @@ fun AddInventoryCard(
                             items = animals.value,
                             onItemSelected = { animal ->
                                 newInventory.value = newInventory.value.copy(bovineId = animal.id)
-                            }
+                            },
+                            textStyle = TextStyle(color = Color.Black)
                         )
                     }
                 }
@@ -201,7 +208,8 @@ fun AddInventoryCard(
                     Icon(
                         painterResource(R.drawable.x_circle),
                         null,
-                        modifier = Modifier.size(45.dp)
+                        modifier = Modifier.size(45.dp),
+                        tint = Color.Black
                     )
                 }
                 IconButton(
@@ -209,7 +217,8 @@ fun AddInventoryCard(
                 ) {
                     Icon(
                         painterResource(R.drawable.check_circle), null,
-                        modifier = Modifier.size(45.dp)
+                        modifier = Modifier.size(45.dp),
+                        tint = Color.Black
                     )
                 }
             }
@@ -254,7 +263,8 @@ fun NumberTextField(
 fun DatePickerTextField(
     label: String,
     date: String,
-    onDateChange: (String) -> Unit
+    onDateChange: (String) -> Unit,
+    textStyle: TextStyle = TextStyle.Default
 ) {
     val context = LocalContext.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS]")
@@ -285,14 +295,16 @@ fun DatePickerTextField(
             IconButton(onClick = { datePickerDialog.show() }) {
                 Icon(
                     imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "Pick Date"
+                    contentDescription = "Pick Date",
+                    tint = Color.Black,
                 )
             }
         },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-        )
+        ),
+        textStyle = textStyle
     )
 }
 
@@ -301,7 +313,8 @@ fun DatePickerTextField(
 fun DropdownSelector(
     label: String,
     items: List<Animal>,
-    onItemSelected: (Animal) -> Unit
+    onItemSelected: (Animal) -> Unit,
+    textStyle: TextStyle = TextStyle.Default
 ) {
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf<Animal?>(null) }
@@ -318,7 +331,8 @@ fun DropdownSelector(
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Dropdown",
-                    modifier = Modifier.clickable { expanded.value = true }
+                    modifier = Modifier.clickable { expanded.value = true },
+                    tint = Color.Black
                 )
             },
             modifier = Modifier
@@ -326,7 +340,8 @@ fun DropdownSelector(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-            )
+            ),
+            textStyle = textStyle
         )
 
         DropdownMenu(

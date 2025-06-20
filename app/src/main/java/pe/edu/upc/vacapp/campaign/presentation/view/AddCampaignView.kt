@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,7 +87,8 @@ fun AddCampaignView(
                         fontSize = 30.sp,
                         color = Color.Black
                     )
-                }
+                },
+                textStyle = TextStyle(color = Color.Black)
 
             )
             TextField(
@@ -108,7 +110,8 @@ fun AddCampaignView(
                         fontSize = 30.sp,
                         color = Color.Black
                     )
-                }
+                },
+                textStyle = TextStyle(color = Color.Black)
 
             )
             Row {
@@ -209,7 +212,8 @@ fun DatePickerTextField(
             IconButton(onClick = { datePickerDialog.show() }) {
                 Icon(
                     imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "Pick Date"
+                    contentDescription = "Pick Date",
+                    tint = Color.Black
                 )
             }
         },
@@ -218,7 +222,8 @@ fun DatePickerTextField(
             focusedContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Black,
             unfocusedIndicatorColor = Color.Black
-        )
+        ),
+        textStyle = TextStyle(color = Color.Black)
     )
 }
 
@@ -226,7 +231,7 @@ fun DatePickerTextField(
 fun DropdownSelector(
     label: String,
     items: List<Barn>,
-    onItemSelected: (Barn) -> Unit
+    onItemSelected: (Barn) -> Unit,
 ) {
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf<Barn?>(null) }
@@ -250,7 +255,8 @@ fun DropdownSelector(
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Dropdown",
-                    modifier = Modifier.clickable { expanded.value = true }
+                    modifier = Modifier.clickable { expanded.value = true },
+                    tint = Color.Black
                 )
             },
             modifier = Modifier
@@ -261,6 +267,7 @@ fun DropdownSelector(
                 focusedIndicatorColor = Color.Black,
                 unfocusedIndicatorColor = Color.Black
             ),
+            textStyle = TextStyle(color = Color.Black)
         )
 
         DropdownMenu(

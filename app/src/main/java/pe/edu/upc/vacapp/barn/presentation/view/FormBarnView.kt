@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,9 +70,10 @@ fun FormBarnView(
                     Text(
                         "Name",
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 40.sp
+                        fontSize = 40.sp,
                     )
-                }
+                },
+                textStyle = TextStyle(color = Color.Black)
 
             )
 
@@ -94,7 +96,8 @@ fun FormBarnView(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 40.sp
                     )
-                }
+                },
+                textStyle = TextStyle(color = Color.Black)
 
             )
 
@@ -134,6 +137,7 @@ fun Underlined(value: String) {
     Text(
         text = value,
         fontSize = 18.sp,
+        color = Color.Black,
         fontWeight = FontWeight.Normal,
         modifier = Modifier
             .fillMaxWidth()

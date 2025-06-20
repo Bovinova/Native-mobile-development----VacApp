@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.iam.presentation.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,8 +60,10 @@ fun Register(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        verticalArrangement = Arrangement.Center,
     ) {
         Row(
             modifier = Modifier
@@ -72,17 +75,18 @@ fun Register(
                 model = R.drawable.vacapp_logo,
                 contentDescription = null,
                 modifier = Modifier
-                    .height(298.dp)
-                    .width(298.dp)
-                    .clip(RoundedCornerShape(360.dp)),
+                    .height(224.dp)
+                    .width(224.dp)
+                    .clip(RoundedCornerShape(320.dp)),
                 contentScale = ContentScale.Fit
             )
         }
 
         Text(
             "Sign Up",
+            color = Color.Black,
             fontWeight = FontWeight.Bold,
-            fontSize = 40.sp,
+            fontSize = 32.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,7 +102,7 @@ fun Register(
             Button(
                 modifier = Modifier
                     .width(165.dp)
-                    .height(50.dp),
+                    .height(45.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.AlmondCream
                 ),
@@ -114,14 +118,17 @@ fun Register(
                         modifier = Modifier.size(32.dp)
                     )
                     Text(
-                        "Gmail", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 20.sp
+                        "Gmail",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
                     )
                 }
             }
             Button(
                 modifier = Modifier
                     .width(165.dp)
-                    .height(50.dp),
+                    .height(45.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.AlmondCream
                 ),
@@ -140,7 +147,7 @@ fun Register(
                         "Outlook",
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 }
             }
@@ -164,6 +171,9 @@ fun Register(
                     focusedContainerColor = Color.AlmondCream,
                     unfocusedContainerColor = Color.AlmondCream
                 ),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = Color.Black,
+                ),
                 value = user.value.username,
                 onValueChange = { viewmodel.updateUsername(it) },
                 placeholder = {
@@ -171,7 +181,7 @@ fun Register(
                         "Name",
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 },
                 leadingIcon = {
@@ -194,11 +204,17 @@ fun Register(
                     focusedContainerColor = Color.AlmondCream,
                     unfocusedContainerColor = Color.AlmondCream
                 ),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = Color.Black,
+                ),
                 value = user.value.email,
                 onValueChange = { viewmodel.updateEmail(it) },
                 placeholder = {
                     Text(
-                        "Email", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 20.sp
+                        "Email",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
                     )
                 },
                 leadingIcon = {
@@ -221,6 +237,9 @@ fun Register(
                     focusedContainerColor = Color.AlmondCream,
                     unfocusedContainerColor = Color.AlmondCream
                 ),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = Color.Black,
+                ),
                 value = user.value.password,
                 onValueChange = { viewmodel.updatePassword(it) },
                 placeholder = {
@@ -228,7 +247,7 @@ fun Register(
                         "Password",
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 },
                 trailingIcon = {
@@ -266,8 +285,8 @@ fun Register(
         ) {
             Button(
                 modifier = Modifier
-                    .width(215.dp)
-                    .height(65.dp),
+                    .width(210.dp)
+                    .height(55.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.ForestGreen
                 ),
@@ -277,7 +296,8 @@ fun Register(
                 Text(
                     "Sign Up",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
+                    color = Color.White,
                 )
             }
 
@@ -290,7 +310,7 @@ fun Register(
                     color = Color.Black,
                     fontWeight = FontWeight.Medium,
                     fontStyle = FontStyle.Italic,
-                    fontSize = 20.sp
+                    fontSize = 18.sp
                 )
             }
         }

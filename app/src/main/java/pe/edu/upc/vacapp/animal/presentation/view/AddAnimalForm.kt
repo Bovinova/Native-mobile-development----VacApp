@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,8 @@ fun AddAnimalForm(
             "Add animal",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 40.dp)
+            modifier = Modifier.padding(bottom = 40.dp),
+            color = Color.Black
         )
 
         AddAnimalCard(viewmodel, goHome = { goHome() })
@@ -148,7 +150,8 @@ fun AddAnimalCard(
                 },
                 label = { Text("Name") },
                 value = newAnimal.value.name,
-                onValueChange = { newAnimal.value = newAnimal.value.copy(name = it) }
+                onValueChange = { newAnimal.value = newAnimal.value.copy(name = it) },
+                textStyle = TextStyle(color = Color.Black)
             )
 
             Column(
@@ -168,7 +171,8 @@ fun AddAnimalCard(
                         ),
                         value = newAnimal.value.breed,
                         label = { Text("Breed") },
-                        onValueChange = { newAnimal.value = newAnimal.value.copy(breed = it) }
+                        onValueChange = { newAnimal.value = newAnimal.value.copy(breed = it) },
+                        textStyle = TextStyle(color = Color.Black)
                     )
 
                     TextField(
@@ -183,7 +187,8 @@ fun AddAnimalCard(
                             newAnimal.value = newAnimal.value.copy(
                                 weight = newWeightString.toDoubleOrNull() ?: newAnimal.value.weight
                             )
-                        }
+                        },
+                        textStyle = TextStyle(color = Color.Black),
                     )
                 }
                 Row(
@@ -197,7 +202,8 @@ fun AddAnimalCard(
                         date = newAnimal.value.birthDate,
                         onDateChange = {
                             newAnimal.value = newAnimal.value.copy(birthDate = it)
-                        }
+                        },
+                        textStyle = TextStyle(color = Color.Black)
                     )
 
                 }
@@ -213,7 +219,8 @@ fun AddAnimalCard(
                             items = barns.value,
                             onItemSelected = { barn ->
                                 newAnimal.value = newAnimal.value.copy(barnId = barn.id)
-                            }
+                            },
+                            textStyle = TextStyle(color = Color.Black)
                         )
                     }
 
@@ -225,7 +232,8 @@ fun AddAnimalCard(
                         ),
                         value = newAnimal.value.location,
                         label = { Text("Location") },
-                        onValueChange = { newAnimal.value = newAnimal.value.copy(location = it) }
+                        onValueChange = { newAnimal.value = newAnimal.value.copy(location = it) },
+                        textStyle = TextStyle(color = Color.Black)
                     )
                 }
             }
@@ -242,7 +250,8 @@ fun AddAnimalCard(
                     Icon(
                         painterResource(R.drawable.x_circle),
                         null,
-                        modifier = Modifier.size(45.dp)
+                        modifier = Modifier.size(45.dp),
+                        tint = Color.Black
                     )
                 }
                 IconButton(
@@ -250,7 +259,8 @@ fun AddAnimalCard(
                 ) {
                     Icon(
                         painterResource(R.drawable.check_circle), null,
-                        modifier = Modifier.size(45.dp)
+                        modifier = Modifier.size(45.dp),
+                        tint = Color.Black
                     )
                 }
             }
@@ -295,7 +305,8 @@ fun NumberTextField(
 fun DatePickerTextField(
     label: String,
     date: String,
-    onDateChange: (String) -> Unit
+    onDateChange: (String) -> Unit,
+    textStyle: TextStyle = TextStyle.Default
 ) {
     val context = LocalContext.current
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -326,14 +337,16 @@ fun DatePickerTextField(
             IconButton(onClick = { datePickerDialog.show() }) {
                 Icon(
                     imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "Pick Date"
+                    contentDescription = "Pick Date",
+                    tint = Color.Black,
                 )
             }
         },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-        )
+        ),
+        textStyle = textStyle
     )
 }
 
@@ -342,7 +355,8 @@ fun DatePickerTextField(
 fun DropdownSelector(
     label: String,
     items: List<Barn>,
-    onItemSelected: (Barn) -> Unit
+    onItemSelected: (Barn) -> Unit,
+    textStyle: TextStyle = TextStyle.Default
 ) {
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf<Barn?>(null) }
@@ -359,7 +373,8 @@ fun DropdownSelector(
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Dropdown",
-                    modifier = Modifier.clickable { expanded.value = true }
+                    modifier = Modifier.clickable { expanded.value = true },
+                    tint = Color.Black
                 )
             },
             modifier = Modifier
@@ -367,7 +382,8 @@ fun DropdownSelector(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-            )
+            ),
+            textStyle = textStyle
         )
 
         DropdownMenu(

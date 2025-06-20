@@ -64,9 +64,14 @@ fun AnimalDetails(
                     Text(
                         animal.name,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 40.sp
+                        fontSize = 40.sp,
+                        color = Color.Black
                     )
-                    Icon(painterResource(icon), contentDescription = null)
+                    Icon(
+                        painterResource(icon),
+                        contentDescription = null,
+                        tint = Color.Black
+                    )
                 }
 
                 AsyncImage(
@@ -91,12 +96,14 @@ fun AnimalDetails(
                             Text(
                                 "Breed",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 animal.breed,
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
 
@@ -104,12 +111,14 @@ fun AnimalDetails(
                             Text(
                                 "Age",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 animal.age.toString(),
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
 
@@ -117,12 +126,14 @@ fun AnimalDetails(
                             Text(
                                 "Barn",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 animal.barnId.toString(),
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
                     }
@@ -134,12 +145,14 @@ fun AnimalDetails(
                             Text(
                                 "Weight",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 "${animal.weight} kg",
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
 
@@ -147,12 +160,14 @@ fun AnimalDetails(
                             Text(
                                 "BirthDate",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 animal.birthDate,
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
 
@@ -160,12 +175,14 @@ fun AnimalDetails(
                             Text(
                                 "Location",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 animal.location,
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
                     }

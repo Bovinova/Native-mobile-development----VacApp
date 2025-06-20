@@ -60,7 +60,8 @@ fun InventoryDetails(
                     Text(
                         inventory.name,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 40.sp
+                        fontSize = 40.sp,
+                        color = Color.Black
                     )
                 }
 
@@ -86,12 +87,14 @@ fun InventoryDetails(
                             Text(
                                 "Vaccine Type",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 inventory.vaccineType,
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
 
@@ -99,12 +102,14 @@ fun InventoryDetails(
                             Text(
                                 "Animal ID",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 inventory.bovineId.toString(),
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
                     }
@@ -116,12 +121,14 @@ fun InventoryDetails(
                             Text(
                                 "Vaccine Date",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.Black
                             )
                             Text(
                                 inventory.vaccineDate,
                                 fontWeight = FontWeight.Light,
-                                fontSize = 24.sp
+                                fontSize = 24.sp,
+                                color = Color.Black
                             )
                         }
                     }

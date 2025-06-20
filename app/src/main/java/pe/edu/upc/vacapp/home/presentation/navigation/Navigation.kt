@@ -114,7 +114,8 @@ fun Navigation(
             modifier = Modifier.fillMaxSize()
         ) { padding ->
             NavHost(
-                navController, startDestination = "home", modifier = Modifier.padding(padding)
+                navController,
+                startDestination = "home", modifier = Modifier.padding(padding)
             ) {
                 composable("home") {
                     homeViewModel.getUserInfo()
@@ -153,7 +154,7 @@ fun Navigation(
                     BarnView(viewmodel)
                 }
 
-                composable("addbarn") {
+                composable("add-barn") {
                     val viewmodel = getBarnViewModel()
                     AddBarnView(
                         viewmodel,

@@ -110,9 +110,14 @@ fun AnimalCard(
                     Text(
                         animal.name,
                         fontWeight = FontWeight.Light,
-                        fontSize = 28.sp
+                        fontSize = 28.sp,
+                        color = Color.Black
                     )
-                    Icon(painterResource(icon), contentDescription = null)
+                    Icon(
+                        painterResource(icon),
+                        contentDescription = null,
+                        tint = Color.Black
+                    )
                 }
 
                 AsyncImage(
@@ -135,12 +140,14 @@ fun AnimalCard(
                     Text(
                         "Barn",
                         fontWeight = FontWeight.Black,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = Color.Black
                     )
                     Text(
                         animal.barnId.toString(),
                         fontWeight = FontWeight.Light,
-                        fontSize = 24.sp
+                        fontSize = 18.sp,
+                        color = Color.Black
                     )
                 }
 
@@ -148,12 +155,14 @@ fun AnimalCard(
                     Text(
                         "Weight",
                         fontWeight = FontWeight.Black,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = Color.Black
                     )
                     Text(
                         "${animal.weight} kg",
                         fontWeight = FontWeight.Light,
-                        fontSize = 24.sp
+                        fontSize = 18.sp,
+                        color = Color.Black
                     )
                 }
 
@@ -161,12 +170,14 @@ fun AnimalCard(
                     Text(
                         "Age",
                         fontWeight = FontWeight.Black,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = Color.Black
                     )
                     Text(
-                        animal.age.toString(),
+                        "${animal.age.toString()} years",
                         fontWeight = FontWeight.Light,
-                        fontSize = 24.sp
+                        fontSize = 18.sp,
+                        color = Color.Black
                     )
                 }
             }
