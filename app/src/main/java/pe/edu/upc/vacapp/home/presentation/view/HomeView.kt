@@ -30,22 +30,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import pe.edu.upc.vacapp.R
-import pe.edu.upc.vacapp.home.domain.model.UserInfo
 import pe.edu.upc.vacapp.home.presentation.viewmodel.HomeViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Composable
 //@Preview
 fun HomeView(
-    ontapAddCampaign: () -> Unit = {},
+    onTapAddCampaign: () -> Unit = {},
     onTapAnimal: () -> Unit = {},
-    ontapAddBarn: () -> Unit = {},
+    onTapAddBarn: () -> Unit = {},
+    onTapInventory: () -> Unit = {},
     viewmodel: HomeViewModel
 ) {
     val isButtonActive = remember { mutableStateOf(false) }
@@ -349,7 +348,7 @@ fun HomeView(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { ontapAddCampaign() }
+                            modifier = Modifier.clickable { onTapAddCampaign() }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.megaphone),
@@ -363,6 +362,7 @@ fun HomeView(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.clickable { onTapInventory() }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.resource_package),
@@ -376,7 +376,7 @@ fun HomeView(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { ontapAddBarn() }
+                            modifier = Modifier.clickable { onTapAddBarn() }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.barn),

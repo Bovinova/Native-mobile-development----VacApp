@@ -1,7 +1,7 @@
 package pe.edu.upc.vacapp.animal.domain.model
 
 data class Animal(
-    val id: Int? = null,
+    val id: Int = 0,
     val name: String = "",
     val breed: String = "",
     val weight: Double = 0.0,

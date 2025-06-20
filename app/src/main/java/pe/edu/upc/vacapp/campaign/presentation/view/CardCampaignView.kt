@@ -46,7 +46,7 @@ fun CardCampaignView(
             Text(
                 campaign.name,
                 fontWeight = FontWeight.Medium,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -58,12 +58,12 @@ fun CardCampaignView(
                 Text(
                     "Description:",
                     fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
+                    fontSize = 18.sp
                 )
                 Text(
                     campaign.description,
                     fontWeight = FontWeight.Light,
-                    fontSize = 20.sp
+                    fontSize = 16.sp
                 )
             }
 
@@ -74,12 +74,12 @@ fun CardCampaignView(
                 Text(
                     "Start Date:",
                     fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
+                    fontSize = 18.sp
                 )
                 Text(
                     campaign.startdate,
                     fontWeight = FontWeight.Light,
-                    fontSize = 20.sp
+                    fontSize = 16.sp
                 )
             }
 
@@ -90,12 +90,12 @@ fun CardCampaignView(
                 Text(
                     "End Date:",
                     fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
+                    fontSize = 18.sp
                 )
                 Text(
                     campaign.enddate,
                     fontWeight = FontWeight.Light,
-                    fontSize = 20.sp
+                    fontSize = 16.sp
                 )
             }
         }
