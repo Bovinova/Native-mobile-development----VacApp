@@ -50,7 +50,8 @@ fun BarnCardView(
                 barn.name,
                 fontWeight = FontWeight.Normal,
                 fontSize = 45.sp,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.Black
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(
@@ -64,31 +65,16 @@ fun BarnCardView(
                     Text(
                         "Capacity:",
                         fontWeight = FontWeight.Black,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = Color.Black
                     )
                     Text(
-                        barn.limit,
+                        "${barn.limit} Bovines",
                         fontWeight = FontWeight.Light,
-                        fontSize = 30.sp
+                        fontSize = 30.sp,
+                        color = Color.Black
                     )
                 }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    Text(
-                        "Cow:",
-                        fontWeight = FontWeight.Black,
-                        fontSize = 20.sp
-                    )
-                    Text(
-                        "50",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 30.sp
-                    )
-                }
-
             }
         }
 

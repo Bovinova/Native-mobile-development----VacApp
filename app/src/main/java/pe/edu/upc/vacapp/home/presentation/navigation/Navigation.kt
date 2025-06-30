@@ -40,6 +40,7 @@ import pe.edu.upc.vacapp.animal.presentation.di.PresentationModule.getAnimalView
 import pe.edu.upc.vacapp.animal.presentation.view.AddAnimalForm
 import pe.edu.upc.vacapp.animal.presentation.view.AnimalCardList
 import pe.edu.upc.vacapp.animal.presentation.view.AnimalDetails
+import pe.edu.upc.vacapp.inventory.presentation.di.PresentationModule.getInventoryViewModel
 import pe.edu.upc.vacapp.barn.presentation.di.PresentationModel.getBarnViewModel
 import pe.edu.upc.vacapp.barn.presentation.view.AddBarnView
 import pe.edu.upc.vacapp.barn.presentation.view.BarnView
@@ -48,6 +49,10 @@ import pe.edu.upc.vacapp.campaign.presentation.view.CampaignView
 import pe.edu.upc.vacapp.campaign.presentation.view.FormCampaignView
 import pe.edu.upc.vacapp.home.presentation.di.PresentationModule.getHomeViewModel
 import pe.edu.upc.vacapp.home.presentation.view.HomeView
+import pe.edu.upc.vacapp.inventory.domain.model.Inventory
+import pe.edu.upc.vacapp.inventory.presentation.view.AddInventoryForm
+import pe.edu.upc.vacapp.inventory.presentation.view.InventoryCardList
+import pe.edu.upc.vacapp.inventory.presentation.view.InventoryDetails
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
 import pe.edu.upc.vacapp.ui.theme.Color
 
@@ -60,18 +65,19 @@ fun Navigation(
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
     val selectedAnimal = remember { mutableStateOf<Animal?>(null) }
+    val selectedInventory = remember { mutableStateOf<Inventory?>(null) }
     val homeViewModel = getHomeViewModel()
 
     ModalNavigationDrawer(
         scrimColor = Color.Transparent, drawerContent = {
             DrawerList(
-                ontapCampaign = {
+                onTapCampaign = {
                     navController.navigate("campaign") {
                         popUpTo("home") { inclusive = false }
                         launchSingleTop = true
                     }
                 },
-                ontapHome = {
+                onTapHome = {
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = false }
                         launchSingleTop = true
@@ -83,7 +89,13 @@ fun Navigation(
                         launchSingleTop = true
                     }
                 },
-                ontapBarn = {
+                onTapInventory = {
+                    navController.navigate("inventory") {
+                        popUpTo("home") { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
+                onTapBarn = {
                     navController.navigate("barn") {
                         popUpTo("home") { inclusive = false }
                         launchSingleTop = true
@@ -102,16 +114,18 @@ fun Navigation(
             modifier = Modifier.fillMaxSize()
         ) { padding ->
             NavHost(
-                navController, startDestination = "home", modifier = Modifier.padding(padding)
+                navController,
+                startDestination = "home", modifier = Modifier.padding(padding)
             ) {
                 composable("home") {
                     homeViewModel.getUserInfo()
 
                     HomeView(
                         viewmodel = homeViewModel,
-                        ontapAddCampaign = { navController.navigate("addcampaign") },
-                        ontapAddBarn = { navController.navigate("addbarn") },
-                        onTapAnimal = { navController.navigate("add-animal") }
+                        onTapAddCampaign = { navController.navigate("add-campaign") },
+                        onTapAddBarn = { navController.navigate("add-barn") },
+                        onTapAnimal = { navController.navigate("add-animal") },
+                        onTapInventory = { navController.navigate("add-inventory") }
                     )
                 }
 
@@ -121,7 +135,7 @@ fun Navigation(
                     CampaignView(viewmodel)
                 }
 
-                composable("addcampaign") {
+                composable("add-campaign") {
                     val viewmodel = getCampaignViewModel()
                     viewmodel.getBarns()
                     FormCampaignView(
@@ -140,7 +154,7 @@ fun Navigation(
                     BarnView(viewmodel)
                 }
 
-                composable("addbarn") {
+                composable("add-barn") {
                     val viewmodel = getBarnViewModel()
                     AddBarnView(
                         viewmodel,
@@ -162,14 +176,41 @@ fun Navigation(
                     }
                 }
 
+                composable("inventory") {
+                    val viewmodel = getInventoryViewModel()
+                    viewmodel.getAllInventories()
+                    InventoryCardList(viewmodel) {
+                        selectedInventory.value = it
+                        navController.navigate("inventory-details")
+                    }
+                }
+
                 composable("animal-details") {
                     AnimalDetails(selectedAnimal.value!!)
+                }
+
+                composable("inventory-details") {
+                    InventoryDetails(selectedInventory.value!!)
                 }
 
                 composable("add-animal") {
                     val viewmodel = getAnimalViewModel()
                     viewmodel.getBarns()
                     AddAnimalForm(
+                        viewmodel,
+                        goHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+
+                composable("add-inventory") {
+                    val viewmodel = getInventoryViewModel()
+                    viewmodel.getAnimals()
+                    AddInventoryForm(
                         viewmodel,
                         goHome = {
                             navController.navigate("home") {
@@ -187,10 +228,11 @@ fun Navigation(
 @Preview
 @Composable
 fun DrawerList(
-    ontapCampaign: () -> Unit = {},
-    ontapHome: () -> Unit = {},
+    onTapCampaign: () -> Unit = {},
+    onTapHome: () -> Unit = {},
     onTapAnimal: () -> Unit = {},
-    ontapBarn: () -> Unit = {},
+    onTapInventory: () -> Unit = {},
+    onTapBarn: () -> Unit = {},
     onSignOut: () -> Unit = {}
 ) {
     Column(
@@ -207,7 +249,7 @@ fun DrawerList(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.clickable { ontapHome() }) {
+                modifier = Modifier.clickable { onTapHome() }) {
                 Icon(
                     painter = painterResource(R.drawable.house),
                     tint = Color.White,
@@ -234,7 +276,7 @@ fun DrawerList(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.clickable { ontapCampaign() }) {
+                modifier = Modifier.clickable { onTapCampaign() }) {
                 Icon(
                     painter = painterResource(R.drawable.megaphone),
                     contentDescription = null,
@@ -251,6 +293,7 @@ fun DrawerList(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.clickable { onTapInventory() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.resource_package),
@@ -268,7 +311,7 @@ fun DrawerList(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.clickable { ontapBarn() }) {
+                modifier = Modifier.clickable { onTapBarn() }) {
                 Icon(
                     painter = painterResource(R.drawable.barn),
                     contentDescription = null,

@@ -1,4 +1,4 @@
-package pe.edu.upc.vacapp.animal.presentation.view
+package pe.edu.upc.vacapp.inventory.presentation.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,33 +10,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import pe.edu.upc.vacapp.R
-import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
+import pe.edu.upc.vacapp.inventory.domain.model.Inventory
+import pe.edu.upc.vacapp.inventory.domain.model.InventoryImage
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview(showBackground = true)
 @Composable
-fun AnimalDetails(
-    animal: Animal = Animal()
+fun InventoryDetails(
+    inventory: Inventory = Inventory()
 ) {
-    val icon = if (animal.isMale) R.drawable.gender_male else R.drawable.gender_female
-    val imgUrl = when (val image = animal.image) {
-        is AnimalImage.FromUrl -> image.url
-        is AnimalImage.FromFile -> ""
+    val imgUrl = when (val image = inventory.image) {
+        is InventoryImage.FromUrl -> image.url
+        is InventoryImage.FromFile -> ""
         null -> ""
     }
     Column(
@@ -62,15 +58,10 @@ fun AnimalDetails(
                     horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        animal.name,
+                        inventory.name,
                         fontWeight = FontWeight.Bold,
                         fontSize = 40.sp,
                         color = Color.Black
-                    )
-                    Icon(
-                        painterResource(icon),
-                        contentDescription = null,
-                        tint = Color.Black
                     )
                 }
 
@@ -94,13 +85,13 @@ fun AnimalDetails(
                     ) {
                         Column {
                             Text(
-                                "Breed",
+                                "Vaccine Type",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp,
                                 color = Color.Black
                             )
                             Text(
-                                animal.breed,
+                                inventory.vaccineType,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 24.sp,
                                 color = Color.Black
@@ -109,28 +100,13 @@ fun AnimalDetails(
 
                         Column {
                             Text(
-                                "Age",
+                                "Animal ID",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp,
                                 color = Color.Black
                             )
                             Text(
-                                animal.age.toString(),
-                                fontWeight = FontWeight.Light,
-                                fontSize = 24.sp,
-                                color = Color.Black
-                            )
-                        }
-
-                        Column {
-                            Text(
-                                "Barn",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                color = Color.Black
-                            )
-                            Text(
-                                animal.barnId.toString(),
+                                inventory.bovineId.toString(),
                                 fontWeight = FontWeight.Light,
                                 fontSize = 24.sp,
                                 color = Color.Black
@@ -143,43 +119,13 @@ fun AnimalDetails(
                     ) {
                         Column {
                             Text(
-                                "Weight",
+                                "Vaccine Date",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp,
                                 color = Color.Black
                             )
                             Text(
-                                "${animal.weight} kg",
-                                fontWeight = FontWeight.Light,
-                                fontSize = 24.sp,
-                                color = Color.Black
-                            )
-                        }
-
-                        Column {
-                            Text(
-                                "BirthDate",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                color = Color.Black
-                            )
-                            Text(
-                                animal.birthDate,
-                                fontWeight = FontWeight.Light,
-                                fontSize = 24.sp,
-                                color = Color.Black
-                            )
-                        }
-
-                        Column {
-                            Text(
-                                "Location",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                color = Color.Black
-                            )
-                            Text(
-                                animal.location,
+                                inventory.vaccineDate,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 24.sp,
                                 color = Color.Black

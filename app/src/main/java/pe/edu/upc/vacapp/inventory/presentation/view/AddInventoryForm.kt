@@ -1,4 +1,4 @@
-package pe.edu.upc.vacapp.animal.presentation.view
+package pe.edu.upc.vacapp.inventory.presentation.view
 
 import android.app.DatePickerDialog
 import android.net.Uri
@@ -38,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -47,18 +46,20 @@ import coil3.compose.AsyncImage
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.R
+import pe.edu.upc.vacapp.inventory.domain.model.Inventory
+import pe.edu.upc.vacapp.inventory.domain.model.InventoryImage
+import pe.edu.upc.vacapp.inventory.presentation.viewmodel.InventoryViewModel
 import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
-import pe.edu.upc.vacapp.animal.presentation.viewmodel.AnimalViewModel
-import pe.edu.upc.vacapp.barn.domain.model.Barn
 import pe.edu.upc.vacapp.ui.theme.Color
 import java.io.File
 import java.util.Calendar
+import androidx.compose.ui.text.TextStyle
+
 
 //@Preview(showBackground = true)
 @Composable
-fun AddAnimalForm(
-    viewmodel: AnimalViewModel,
+fun AddInventoryForm(
+    viewmodel: InventoryViewModel,
     goHome: () -> Unit
 ) {
     Column(
@@ -67,28 +68,28 @@ fun AddAnimalForm(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            "Add animal",
+            "Add inventory",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 40.dp),
-            color = Color.Black
+            color = Color.Black,
         )
 
-        AddAnimalCard(viewmodel, goHome = { goHome() })
+        AddInventoryCard(viewmodel, goHome = { goHome() })
     }
 }
 
 //@Preview
 @Composable
-fun AddAnimalCard(
-    viewmodel: AnimalViewModel,
+fun AddInventoryCard(
+    viewmodel: InventoryViewModel,
     goHome: () -> Unit
 ) {
     val context = LocalContext.current
     val imageUri = remember { mutableStateOf<Uri?>(null) }
     val imageFile = remember { mutableStateOf<File?>(null) }
-    val newAnimal = remember { mutableStateOf(Animal()) }
-    val barns = viewmodel.barn.collectAsState()
+    val newInventory = remember { mutableStateOf(Inventory()) }
+    val animals = viewmodel.animal.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -97,14 +98,12 @@ fun AddAnimalCard(
 
         uri?.let {
             val inputStream = context.contentResolver.openInputStream(it)
-            val tempFile = File.createTempFile("animal", ".jpg", context.cacheDir)
+            val tempFile = File.createTempFile("inventory", ".jpg", context.cacheDir)
             inputStream?.use { input -> tempFile.outputStream().use { input.copyTo(it) } }
             imageFile.value = tempFile
-            newAnimal.value = newAnimal.value.copy(image = AnimalImage.FromFile(tempFile))
+            newInventory.value = newInventory.value.copy(image = InventoryImage.FromFile(tempFile))
         }
     }
-
-    val icon = if (newAnimal.value.isMale) R.drawable.gender_male else R.drawable.gender_female
 
     Card(
         modifier = Modifier.padding(horizontal = 20.dp)
@@ -135,22 +134,9 @@ fun AddAnimalCard(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                 ),
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            newAnimal.value = newAnimal.value.copy(isMale = !newAnimal.value.isMale)
-                        }
-                    ) {
-                        Icon(
-                            painterResource(icon),
-                            null,
-                            tint = Color.Black
-                        )
-                    }
-                },
                 label = { Text("Name") },
-                value = newAnimal.value.name,
-                onValueChange = { newAnimal.value = newAnimal.value.copy(name = it) },
+                value = newInventory.value.name,
+                onValueChange = { newInventory.value = newInventory.value.copy(name = it) },
                 textStyle = TextStyle(color = Color.Black)
             )
 
@@ -169,26 +155,10 @@ fun AddAnimalCard(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
                         ),
-                        value = newAnimal.value.breed,
-                        label = { Text("Breed") },
-                        onValueChange = { newAnimal.value = newAnimal.value.copy(breed = it) },
+                        value = newInventory.value.vaccineType,
+                        label = { Text("Vaccine Type") },
+                        onValueChange = { newInventory.value = newInventory.value.copy(vaccineType = it) },
                         textStyle = TextStyle(color = Color.Black)
-                    )
-
-                    TextField(
-                        modifier = Modifier.weight(1f),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                        ),
-                        value = newAnimal.value.weight.toString(),
-                        label = { Text("Weight") },
-                        onValueChange = { newWeightString ->
-                            newAnimal.value = newAnimal.value.copy(
-                                weight = newWeightString.toDoubleOrNull() ?: newAnimal.value.weight
-                            )
-                        },
-                        textStyle = TextStyle(color = Color.Black),
                     )
                 }
                 Row(
@@ -198,10 +168,10 @@ fun AddAnimalCard(
                     )
                 ) {
                     DatePickerTextField(
-                        label = "Birthdate",
-                        date = newAnimal.value.birthDate,
+                        label = "Vaccine Date",
+                        date = newInventory.value.vaccineDate,
                         onDateChange = {
-                            newAnimal.value = newAnimal.value.copy(birthDate = it)
+                            newInventory.value = newInventory.value.copy(vaccineDate = it)
                         },
                         textStyle = TextStyle(color = Color.Black)
                     )
@@ -215,26 +185,14 @@ fun AddAnimalCard(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         DropdownSelector(
-                            label = "Barn",
-                            items = barns.value,
-                            onItemSelected = { barn ->
-                                newAnimal.value = newAnimal.value.copy(barnId = barn.id)
+                            label = "Animal",
+                            items = animals.value,
+                            onItemSelected = { animal ->
+                                newInventory.value = newInventory.value.copy(bovineId = animal.id)
                             },
                             textStyle = TextStyle(color = Color.Black)
                         )
                     }
-
-                    TextField(
-                        modifier = Modifier.weight(1f),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                        ),
-                        value = newAnimal.value.location,
-                        label = { Text("Location") },
-                        onValueChange = { newAnimal.value = newAnimal.value.copy(location = it) },
-                        textStyle = TextStyle(color = Color.Black)
-                    )
                 }
             }
 
@@ -255,7 +213,7 @@ fun AddAnimalCard(
                     )
                 }
                 IconButton(
-                    onClick = { viewmodel.addAnimal(newAnimal.value) }
+                    onClick = { viewmodel.addInventory(newInventory.value) }
                 ) {
                     Icon(
                         painterResource(R.drawable.check_circle), null,
@@ -309,7 +267,7 @@ fun DatePickerTextField(
     textStyle: TextStyle = TextStyle.Default
 ) {
     val context = LocalContext.current
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS]")
     val calendar = Calendar.getInstance()
 
     val datePickerDialog = remember {
@@ -354,12 +312,12 @@ fun DatePickerTextField(
 @Composable
 fun DropdownSelector(
     label: String,
-    items: List<Barn>,
-    onItemSelected: (Barn) -> Unit,
+    items: List<Animal>,
+    onItemSelected: (Animal) -> Unit,
     textStyle: TextStyle = TextStyle.Default
 ) {
     val expanded = remember { mutableStateOf(false) }
-    val selectedItem = remember { mutableStateOf<Barn?>(null) }
+    val selectedItem = remember { mutableStateOf<Animal?>(null) }
 
     Box(
         modifier = Modifier.fillMaxWidth()

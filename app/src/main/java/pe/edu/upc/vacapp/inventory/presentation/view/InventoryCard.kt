@@ -1,4 +1,4 @@
-package pe.edu.upc.vacapp.animal.presentation.view
+package pe.edu.upc.vacapp.inventory.presentation.view
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -31,18 +31,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import pe.edu.upc.vacapp.R
-import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
-import pe.edu.upc.vacapp.animal.presentation.viewmodel.AnimalViewModel
+import pe.edu.upc.vacapp.inventory.domain.model.Inventory
+import pe.edu.upc.vacapp.inventory.domain.model.InventoryImage
+import pe.edu.upc.vacapp.inventory.presentation.viewmodel.InventoryViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
 
 //@Preview(showBackground = true)
 @Composable
-fun AnimalCardList(
-    viewmodel: AnimalViewModel,
-    onTap: (Animal) -> Unit
+fun InventoryCardList(
+    viewmodel: InventoryViewModel,
+    onTap: (Inventory) -> Unit
 ) {
-    val animals = viewmodel.animals.collectAsState()
+    val inventories = viewmodel.inventories.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -50,7 +50,7 @@ fun AnimalCardList(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            "Animals",
+            "Inventories",
             fontWeight = FontWeight.Bold,
             fontSize = 45.sp,
             color = Color.ForestGreen,
@@ -60,8 +60,8 @@ fun AnimalCardList(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
-            items(animals.value) {
-                AnimalCard(it) {
+            items(inventories.value) {
+                InventoryCard(it) {
                     onTap(it)
                 }
             }
@@ -71,15 +71,14 @@ fun AnimalCardList(
 
 @Preview(showBackground = true)
 @Composable
-fun AnimalCard(
-    animal: Animal = Animal(),
+fun InventoryCard(
+    inventory: Inventory = Inventory(),
     onTap: () -> Unit = {}
 ) {
-    Log.d("animal", animal.toString())
-    val icon = if (animal.isMale) R.drawable.gender_male else R.drawable.gender_female
-    val imgUrl = when (val image = animal.image) {
-        is AnimalImage.FromUrl -> image.url
-        is AnimalImage.FromFile -> ""
+    Log.d("inventory", inventory.toString())
+    val imgUrl = when (val image = inventory.image) {
+        is InventoryImage.FromUrl -> image.url
+        is InventoryImage.FromFile -> ""
         null -> ""
     }
 
@@ -108,15 +107,10 @@ fun AnimalCard(
                     horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        animal.name,
+                        inventory.name,
                         fontWeight = FontWeight.Light,
                         fontSize = 28.sp,
                         color = Color.Black
-                    )
-                    Icon(
-                        painterResource(icon),
-                        contentDescription = null,
-                        tint = Color.Black
                     )
                 }
 
@@ -138,13 +132,13 @@ fun AnimalCard(
             ) {
                 Column {
                     Text(
-                        "Barn",
+                        "Animal Id",
                         fontWeight = FontWeight.Black,
                         fontSize = 12.sp,
                         color = Color.Black
                     )
                     Text(
-                        animal.barnId.toString(),
+                        inventory.bovineId.toString(),
                         fontWeight = FontWeight.Light,
                         fontSize = 18.sp,
                         color = Color.Black
@@ -153,28 +147,13 @@ fun AnimalCard(
 
                 Column {
                     Text(
-                        "Weight",
+                        "Vaccine Type",
                         fontWeight = FontWeight.Black,
                         fontSize = 12.sp,
                         color = Color.Black
                     )
                     Text(
-                        "${animal.weight} kg",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 18.sp,
-                        color = Color.Black
-                    )
-                }
-
-                Column {
-                    Text(
-                        "Age",
-                        fontWeight = FontWeight.Black,
-                        fontSize = 12.sp,
-                        color = Color.Black
-                    )
-                    Text(
-                        "${animal.age.toString()} years",
+                        inventory.vaccineType,
                         fontWeight = FontWeight.Light,
                         fontSize = 18.sp,
                         color = Color.Black

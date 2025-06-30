@@ -30,22 +30,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import pe.edu.upc.vacapp.R
-import pe.edu.upc.vacapp.home.domain.model.UserInfo
 import pe.edu.upc.vacapp.home.presentation.viewmodel.HomeViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Composable
 //@Preview
 fun HomeView(
-    ontapAddCampaign: () -> Unit = {},
+    onTapAddCampaign: () -> Unit = {},
     onTapAnimal: () -> Unit = {},
-    ontapAddBarn: () -> Unit = {},
+    onTapAddBarn: () -> Unit = {},
+    onTapInventory: () -> Unit = {},
     viewmodel: HomeViewModel
 ) {
     val isButtonActive = remember { mutableStateOf(false) }
@@ -60,7 +59,7 @@ fun HomeView(
             Text(
                 "Welcome",
                 fontWeight = FontWeight.Bold,
-                fontSize = 45.sp,
+                fontSize = 40.sp,
                 color = androidx.compose.ui.graphics.Color(0xFF1D3620),
                 textAlign = TextAlign.Center
             )
@@ -68,7 +67,7 @@ fun HomeView(
                 "${userInfo.value.name}!",
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                fontSize = 45.sp,
+                fontSize = 40.sp,
                 color = androidx.compose.ui.graphics.Color(0xFF1D3620),
                 textAlign = TextAlign.Center
             )
@@ -77,7 +76,7 @@ fun HomeView(
         Card(
             modifier = Modifier
                 .width(365.dp)
-                .height(120.dp),
+                .height(100.dp),
             shape = RoundedCornerShape(5.dp),
             colors =
                 CardDefaults.cardColors(
@@ -90,12 +89,12 @@ fun HomeView(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Text("Registered animals", fontWeight = FontWeight.Light, fontSize = 32.sp)
+                Text("Registered animals", fontWeight = FontWeight.Light, fontSize = 28.sp)
 
                 Text(
                     userInfo.value.totalAnimals.toString(),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 48.sp
+                    fontSize = 28.sp
                 )
             }
         }
@@ -105,7 +104,7 @@ fun HomeView(
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(120.dp),
+                        .height(100.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -122,15 +121,15 @@ fun HomeView(
                         Text(
                             userInfo.value.totalCampaigns.toString(),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 64.sp
+                            fontSize = 40.sp
                         )
-                        Text("Campaigns", fontWeight = FontWeight.Light, fontSize = 20.sp)
+                        Text("Campaigns", fontWeight = FontWeight.Light, fontSize = 16.sp)
                     }
                 }
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(120.dp),
+                        .height(100.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -147,9 +146,9 @@ fun HomeView(
                         Text(
                             userInfo.value.totalBarns.toString(),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 64.sp
+                            fontSize = 40.sp
                         )
-                        Text("Barn", fontWeight = FontWeight.Light, fontSize = 20.sp)
+                        Text("Barn", fontWeight = FontWeight.Light, fontSize = 16.sp)
                     }
                 }
             }
@@ -157,7 +156,7 @@ fun HomeView(
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(120.dp),
+                        .height(100.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -171,18 +170,18 @@ fun HomeView(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text("10", fontWeight = FontWeight.Bold, fontSize = 64.sp)
+                        Text("-", fontWeight = FontWeight.Bold, fontSize = 40.sp)
                         Text(
-                            "Vaccines about to expire",
+                            "Vaccines expired",
                             fontWeight = FontWeight.Light,
-                            fontSize = 14.sp
+                            fontSize = 16.sp
                         )
                     }
                 }
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(120.dp),
+                        .height(100.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -196,8 +195,8 @@ fun HomeView(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text("32", fontWeight = FontWeight.Bold, fontSize = 64.sp)
-                        Text("Products", fontWeight = FontWeight.Light, fontSize = 20.sp)
+                        Text("-", fontWeight = FontWeight.Bold, fontSize = 40.sp)
+                        Text("Vaccines", fontWeight = FontWeight.Light, fontSize = 16.sp)
                     }
                 }
             }
@@ -227,9 +226,15 @@ fun HomeView(
                     Text(
                         "Foot and Mouth Disease Vaccination",
                         fontWeight = FontWeight.Light,
-                        fontSize = 12.sp
+                        fontSize = 14.sp,
+                        color = Color.Black,
+                        maxLines = 1
                     )
-                    Text("10-May", fontWeight = FontWeight.Light, fontSize = 16.sp)
+                    Text("10-May",
+                        fontWeight = FontWeight.Light,
+                        fontSize = 16.sp,
+                        color = Color.Black
+                    )
                 }
                 Divider(
                     color = androidx.compose.ui.graphics.Color.Black,
@@ -255,37 +260,16 @@ fun HomeView(
                     Text(
                         "Internal and External Deworming",
                         fontWeight = FontWeight.Light,
-                        fontSize = 12.sp
+                        fontSize = 14.sp,
+                        color = Color.Black,
+                        maxLines = 1
                     )
-                    Text("05-July", fontWeight = FontWeight.Light, fontSize = 16.sp)
-                }
-                Divider(
-                    color = androidx.compose.ui.graphics.Color.Black,
-                    thickness = 1.dp,
-                    modifier =
-                        Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 0.15.dp
-                            ) // Margen izquierdo/derecho para la línea
-                )
-            }
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 5.dp), // Espacio para el Divider
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
                     Text(
-                        "Brucellosis Sanitation Campaign",
+                        "05-July",
                         fontWeight = FontWeight.Light,
-                        fontSize = 12.sp
+                        fontSize = 16.sp,
+                        color = Color.Black
                     )
-                    Text("23-August", fontWeight = FontWeight.Light, fontSize = 16.sp)
                 }
                 Divider(
                     color = androidx.compose.ui.graphics.Color.Black,
@@ -316,7 +300,9 @@ fun HomeView(
                     contentDescription = null,
                     modifier = Modifier
                         .width(40.dp)
-                        .height(40.dp)
+                        .height(40.dp),
+                    tint = Color.Black
+
                 )
             }
 
@@ -342,50 +328,69 @@ fun HomeView(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .width(24.dp)
-                                    .height(24.dp)
+                                    .height(24.dp),
+                                tint = Color.Black
                             )
-                            Text("Animal", fontWeight = FontWeight.ExtraLight, fontSize = 20.sp)
+                            Text("Animal",
+                                fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp,
+                                color = Color.Black
+                            )
                         }
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { ontapAddCampaign() }
+                            modifier = Modifier.clickable { onTapAddCampaign() }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.megaphone),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .width(24.dp)
-                                    .height(24.dp)
+                                    .height(24.dp),
+                                tint = Color.Black
+
                             )
-                            Text("Campaign", fontWeight = FontWeight.ExtraLight, fontSize = 20.sp)
+                            Text("Campaign",
+                                fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp,
+                                color = Color.Black)
                         }
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.clickable { onTapInventory() }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.resource_package),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .width(24.dp)
-                                    .height(24.dp)
+                                    .height(24.dp),
+                                tint = Color.Black
                             )
-                            Text("Inventory", fontWeight = FontWeight.ExtraLight, fontSize = 20.sp)
+                            Text("Inventory",
+                                fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp,
+                                color = Color.Black)
                         }
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { ontapAddBarn() }
+                            modifier = Modifier.clickable { onTapAddBarn() }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.barn),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .width(24.dp)
-                                    .height(24.dp)
+                                    .height(24.dp),
+                                tint = Color.Black
                             )
-                            Text("Barn", fontWeight = FontWeight.ExtraLight, fontSize = 20.sp)
+                            Text("Barn",
+                                fontWeight = FontWeight.ExtraLight,
+                                fontSize = 20.sp,
+                                color = Color.Black)
                         }
                     }
                 }

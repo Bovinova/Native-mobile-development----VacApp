@@ -13,8 +13,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,7 +32,7 @@ fun CardCampaignView(
     Card(
         modifier = Modifier
             .width(380.dp)
-            .height(195.dp)
+            .height(220.dp)
             .padding(16.dp),
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(
@@ -46,7 +49,7 @@ fun CardCampaignView(
             Text(
                 campaign.name,
                 fontWeight = FontWeight.Medium,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -56,14 +59,20 @@ fun CardCampaignView(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    "Description:",
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
-                )
-                Text(
-                    campaign.description,
-                    fontWeight = FontWeight.Light,
-                    fontSize = 20.sp
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Normal, fontSize = 18.sp)) {
+                            append("Description: \n")
+                        }
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Light, fontSize = 16.sp)) {
+                            append("Test ${campaign.description}")
+                        }
+                    },
+                    color = Color.Black,
+                    maxLines = 2,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
                 )
             }
 
@@ -74,12 +83,14 @@ fun CardCampaignView(
                 Text(
                     "Start Date:",
                     fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
+                    fontSize = 18.sp,
+                    color = Color.Black
                 )
                 Text(
                     campaign.startdate,
                     fontWeight = FontWeight.Light,
-                    fontSize = 20.sp
+                    fontSize = 16.sp,
+                    color = Color.Black
                 )
             }
 
@@ -90,12 +101,14 @@ fun CardCampaignView(
                 Text(
                     "End Date:",
                     fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
+                    fontSize = 18.sp,
+                    color = Color.Black
                 )
                 Text(
                     campaign.enddate,
                     fontWeight = FontWeight.Light,
-                    fontSize = 20.sp
+                    fontSize = 16.sp,
+                    color = Color.Black
                 )
             }
         }

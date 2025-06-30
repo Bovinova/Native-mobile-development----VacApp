@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.iam.presentation.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -49,7 +53,9 @@ fun Login(
 ) {
     val user = viewmodel.user.collectAsState()
     val loginSuccess = viewmodel.loginSuccess.collectAsState()
+    val errorMessage = viewmodel.errorMessage.collectAsState()
     val showPassword = remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(loginSuccess.value) {
         if (loginSuccess.value == true) {
@@ -58,9 +64,23 @@ fun Login(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+    // Mostrar Snackbar si hay error
+    LaunchedEffect(errorMessage.value) {
+        errorMessage.value?.let {
+            snackbarHostState.showSnackbar(it)
+            viewmodel.resetErrorMessage()
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.Center
     ) {
         Row(
             modifier = Modifier
@@ -72,8 +92,8 @@ fun Login(
                 model = R.drawable.vacapp_logo,
                 contentDescription = null,
                 modifier = Modifier
-                    .height(298.dp)
-                    .width(298.dp)
+                    .height(224.dp)
+                    .width(224.dp)
                     .clip(RoundedCornerShape(360.dp)),
                 contentScale = ContentScale.Fit
             )
@@ -81,8 +101,9 @@ fun Login(
 
         Text(
             "Sign In",
+            color = Color.Black,
             fontWeight = FontWeight.Bold,
-            fontSize = 40.sp,
+            fontSize = 32.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -92,13 +113,13 @@ fun Login(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 60.dp),
+                .padding(bottom = 50.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
         ) {
             Button(
                 modifier = Modifier
                     .width(165.dp)
-                    .height(50.dp),
+                    .height(45.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.AlmondCream
                 ),
@@ -114,14 +135,17 @@ fun Login(
                         modifier = Modifier.size(32.dp)
                     )
                     Text(
-                        "Gmail", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 20.sp
+                        "Gmail",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
                     )
                 }
             }
             Button(
                 modifier = Modifier
                     .width(165.dp)
-                    .height(50.dp),
+                    .height(45.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.AlmondCream
                 ),
@@ -140,7 +164,7 @@ fun Login(
                         "Outlook",
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 }
             }
@@ -149,7 +173,7 @@ fun Login(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 70.dp),
+                .padding(bottom = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
@@ -164,11 +188,17 @@ fun Login(
                     focusedContainerColor = Color.AlmondCream,
                     unfocusedContainerColor = Color.AlmondCream
                 ),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = Color.Black,
+                ),
                 value = user.value.email,
                 onValueChange = { viewmodel.updateEmail(it) },
                 placeholder = {
                     Text(
-                        "Email", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 20.sp
+                        "Email",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
                     )
                 },
                 leadingIcon = {
@@ -191,6 +221,9 @@ fun Login(
                     focusedContainerColor = Color.AlmondCream,
                     unfocusedContainerColor = Color.AlmondCream
                 ),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = Color.Black,
+                ),
                 value = user.value.password,
                 onValueChange = { viewmodel.updatePassword(it) },
                 placeholder = {
@@ -198,7 +231,7 @@ fun Login(
                         "Password",
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 },
                 trailingIcon = {
@@ -236,8 +269,8 @@ fun Login(
         ) {
             Button(
                 modifier = Modifier
-                    .width(215.dp)
-                    .height(65.dp),
+                    .width(210.dp)
+                    .height(55.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.ForestGreen
                 ),
@@ -247,7 +280,8 @@ fun Login(
                 Text(
                     "Sign In",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
+                    color = Color.White
                 )
             }
 
@@ -260,9 +294,10 @@ fun Login(
                     color = Color.Black,
                     fontWeight = FontWeight.Medium,
                     fontStyle = FontStyle.Italic,
-                    fontSize = 20.sp
+                    fontSize = 18.sp,
                 )
             }
         }
     }
+        }
 }
