@@ -76,7 +76,7 @@ fun HomeView(
         Card(
             modifier = Modifier
                 .width(365.dp)
-                .height(100.dp),
+                .height(95.dp),
             shape = RoundedCornerShape(5.dp),
             colors =
                 CardDefaults.cardColors(
@@ -89,7 +89,7 @@ fun HomeView(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Text("Registered animals", fontWeight = FontWeight.Light, fontSize = 28.sp)
+                Text("Registered animals", fontWeight = FontWeight.Light, fontSize = 24.sp)
 
                 Text(
                     userInfo.value.totalAnimals.toString(),
@@ -99,12 +99,12 @@ fun HomeView(
             }
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(25.dp)) {
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(100.dp),
+                        .height(85.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -121,7 +121,7 @@ fun HomeView(
                         Text(
                             userInfo.value.totalCampaigns.toString(),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 40.sp
+                            fontSize = 28.sp
                         )
                         Text("Campaigns", fontWeight = FontWeight.Light, fontSize = 16.sp)
                     }
@@ -129,7 +129,7 @@ fun HomeView(
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(100.dp),
+                        .height(85.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -146,58 +146,30 @@ fun HomeView(
                         Text(
                             userInfo.value.totalBarns.toString(),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 40.sp
+                            fontSize = 28.sp
                         )
-                        Text("Barn", fontWeight = FontWeight.Light, fontSize = 16.sp)
+                        Text("Stables", fontWeight = FontWeight.Light, fontSize = 16.sp)
                     }
                 }
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
-                Card(
-                    modifier = Modifier
-                        .width(165.dp)
-                        .height(100.dp),
-                    shape = RoundedCornerShape(5.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = Color.AlmondCream,
-                            contentColor = Color.Black
-                        )
+            Card(
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(85.dp)
+                    .align(Alignment.CenterHorizontally),
+                shape = RoundedCornerShape(5.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.AlmondCream,
+                    contentColor = Color.Black
+                )
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Column(
-                        verticalArrangement =
-                            Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("-", fontWeight = FontWeight.Bold, fontSize = 40.sp)
-                        Text(
-                            "Vaccines expired",
-                            fontWeight = FontWeight.Light,
-                            fontSize = 16.sp
-                        )
-                    }
-                }
-                Card(
-                    modifier = Modifier
-                        .width(165.dp)
-                        .height(100.dp),
-                    shape = RoundedCornerShape(5.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = Color.AlmondCream,
-                            contentColor = Color.Black
-                        )
-                ) {
-                    Column(
-                        verticalArrangement =
-                            Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("-", fontWeight = FontWeight.Bold, fontSize = 40.sp)
-                        Text("Vaccines", fontWeight = FontWeight.Light, fontSize = 16.sp)
-                    }
+                    Text("-", fontWeight = FontWeight.Bold, fontSize = 28.sp)
+                    Text("Vaccines", fontWeight = FontWeight.Light, fontSize = 16.sp)
                 }
             }
         }
@@ -205,22 +177,24 @@ fun HomeView(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = Modifier.padding(25.dp, 0.dp)
+            modifier = Modifier.padding(25.dp, 20.dp)
         ) {
             Text(
                 "Upcoming Events",
                 fontWeight = FontWeight.Bold,
-                fontSize = 40.sp,
+                fontSize = 32.sp,
                 color = androidx.compose.ui.graphics.Color(0xFF1D3620),
                 textAlign = TextAlign.Center
             )
 
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+            ) {
                 Row(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 5.dp), // Espacio para el Divider
+                            .padding(bottom = 5.dp), // Divider Space
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -245,7 +219,7 @@ fun HomeView(
                             .fillMaxWidth()
                             .padding(
                                 horizontal = 0.15.dp
-                            ) // Margen izquierdo/derecho para la línea
+                            )
                 )
             }
 
@@ -254,7 +228,7 @@ fun HomeView(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 5.dp), // Espacio para el Divider
+                            .padding(bottom = 5.dp), // Divider Space
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -280,7 +254,7 @@ fun HomeView(
                             .fillMaxWidth()
                             .padding(
                                 horizontal = 0.15.dp
-                            ) // Margen izquierdo/derecho para la línea
+                            )
                 )
             }
         }
