@@ -125,7 +125,32 @@ fun Navigation(
                         onTapAddCampaign = { navController.navigate("add-campaign") },
                         onTapAddBarn = { navController.navigate("add-barn") },
                         onTapAnimal = { navController.navigate("add-animal") },
-                        onTapInventory = { navController.navigate("add-inventory") }
+                        onTapInventory = { navController.navigate("add-inventory") },
+                        //New Functions to navigate from home cards
+                        onTapAnimalsSection = {
+                            navController.navigate("animals") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                        onTapCampaignSection = {
+                            navController.navigate("campaign") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                        onTapBarnSection = {
+                            navController.navigate("barn") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                        onTapInventorySection = {
+                            navController.navigate("inventory") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
                     )
                 }
 

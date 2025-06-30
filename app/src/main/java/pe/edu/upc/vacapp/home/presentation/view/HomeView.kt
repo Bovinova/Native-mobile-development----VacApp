@@ -45,6 +45,12 @@ fun HomeView(
     onTapAnimal: () -> Unit = {},
     onTapAddBarn: () -> Unit = {},
     onTapInventory: () -> Unit = {},
+    // New On Taps Sections
+    onTapAnimalsSection: () -> Unit = {},
+    onTapCampaignSection: () -> Unit = {},
+    onTapBarnSection: () -> Unit = {},
+    onTapInventorySection: () -> Unit = {},
+    // End of New On Taps Sections
     viewmodel: HomeViewModel
 ) {
     val isButtonActive = remember { mutableStateOf(false) }
@@ -73,11 +79,13 @@ fun HomeView(
             )
         }
 
+        // Card de Registered Animals - Clickable
         Card(
             modifier = Modifier
                 .width(365.dp)
-                .height(95.dp),
-            shape = RoundedCornerShape(5.dp),
+                .height(95.dp)
+                .clickable { onTapAnimalsSection() }, // Make clickable
+        shape = RoundedCornerShape(5.dp),
             colors =
                 CardDefaults.cardColors(
                     containerColor = Color.AlmondCream,
@@ -101,10 +109,12 @@ fun HomeView(
 
         Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(25.dp)) {
+                // Card de Campaigns - Clickable
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(85.dp),
+                        .height(85.dp)
+                        .clickable { onTapCampaignSection() }, // Make clickable
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -126,10 +136,12 @@ fun HomeView(
                         Text("Campaigns", fontWeight = FontWeight.Light, fontSize = 16.sp)
                     }
                 }
+                // Card de Barn (Stables) - Clickable
                 Card(
                     modifier = Modifier
                         .width(165.dp)
-                        .height(85.dp),
+                        .height(85.dp)
+                        .clickable { onTapBarnSection() }, // Make clickable
                     shape = RoundedCornerShape(5.dp),
                     colors =
                         CardDefaults.cardColors(
@@ -152,11 +164,14 @@ fun HomeView(
                     }
                 }
             }
+
+            // Card de Vaccines (Inventory) - Clickable
             Card(
                 modifier = Modifier
                     .width(165.dp)
                     .height(85.dp)
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
+                    .clickable { onTapInventorySection() }, // Make clickable
                 shape = RoundedCornerShape(5.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.AlmondCream,
