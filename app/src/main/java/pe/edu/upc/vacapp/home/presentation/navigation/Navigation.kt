@@ -228,6 +228,12 @@ fun Navigation(
                                 popUpTo("home") { inclusive = false }
                                 launchSingleTop = true
                             }
+                        },
+                        goAnimals = {
+                            navController.navigate("animals") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
                         }
                     )
                 }
