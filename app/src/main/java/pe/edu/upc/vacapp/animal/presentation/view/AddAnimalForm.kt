@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,7 +60,8 @@ import java.util.Calendar
 @Composable
 fun AddAnimalForm(
     viewmodel: AnimalViewModel,
-    goHome: () -> Unit
+    goHome: () -> Unit,
+    goAnimals: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -74,7 +76,11 @@ fun AddAnimalForm(
             color = Color.Black
         )
 
-        AddAnimalCard(viewmodel, goHome = { goHome() })
+        AddAnimalCard(
+            viewmodel,
+            goHome = { goHome() },
+            goAnimals = { goAnimals() }
+        )
     }
 }
 
@@ -82,13 +88,16 @@ fun AddAnimalForm(
 @Composable
 fun AddAnimalCard(
     viewmodel: AnimalViewModel,
-    goHome: () -> Unit
+    goHome: () -> Unit,
+    goAnimals: () -> Unit
 ) {
+    val errorMessage = viewmodel.errorMessage.collectAsState().value
     val context = LocalContext.current
     val imageUri = remember { mutableStateOf<Uri?>(null) }
     val imageFile = remember { mutableStateOf<File?>(null) }
     val newAnimal = remember { mutableStateOf(Animal()) }
     val barns = viewmodel.barn.collectAsState()
+    val addSuccess = viewmodel.addAnimalSuccess.collectAsState().value
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -105,6 +114,14 @@ fun AddAnimalCard(
     }
 
     val icon = if (newAnimal.value.isMale) R.drawable.gender_male else R.drawable.gender_female
+
+    LaunchedEffect(addSuccess) {
+        if (addSuccess) {
+            viewmodel.clearErrorMessage()
+            viewmodel.clearAddAnimalSuccess()
+            goAnimals()
+        }
+    }
 
     Card(
         modifier = Modifier.padding(horizontal = 20.dp)
@@ -238,6 +255,17 @@ fun AddAnimalCard(
                 }
             }
 
+            if (!errorMessage.isNullOrEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = androidx.compose.ui.graphics.Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                )
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -245,7 +273,10 @@ fun AddAnimalCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(
-                    onClick = { goHome() }
+                    onClick = {
+                        viewmodel.clearErrorMessage()
+                        goHome()
+                    }
                 ) {
                     Icon(
                         painterResource(R.drawable.x_circle),
