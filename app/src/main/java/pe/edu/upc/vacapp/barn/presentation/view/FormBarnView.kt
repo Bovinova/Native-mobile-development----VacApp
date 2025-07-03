@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.barn.presentation.view
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,8 +37,9 @@ import pe.edu.upc.vacapp.ui.theme.Color
 
 fun FormBarnView(
     viewModel: BarnViewModel,
-    goHome:() ->Unit
+    goHome: () -> Unit
 ) {
+    val context = LocalContext.current
     val barn = remember { mutableStateOf(Barn()) }
     Card(
         modifier = Modifier
@@ -118,13 +121,25 @@ fun FormBarnView(
                     )
                 }
                 IconButton(
-                    onClick = { viewModel.addBarn(barn.value) }
+                    onClick = {
+                        viewModel.addBarn(
+                            barn.value,
+                            onError = { message ->
+                                Toast.makeText(
+                                    context,
+                                    "Error adding barn: $message",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        )
+                    }
                 ) {
                     Icon(
                         painterResource(R.drawable.check_circle), null,
                         modifier = Modifier.size(45.dp)
                     )
                 }
+
             }
 
 

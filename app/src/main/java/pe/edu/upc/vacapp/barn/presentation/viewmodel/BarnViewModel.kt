@@ -15,11 +15,16 @@ class BarnViewModel(
     private val _barns = MutableStateFlow<List<Barn>>(emptyList())
     val barn: StateFlow<List<Barn>> = _barns
 
-    fun addBarn(barn: Barn) {
+    fun addBarn(barn: Barn, onError: (String) -> Unit) {
         viewModelScope.launch {
-            barnRepository.addBarn(barn)
+            try {
+                barnRepository.addBarn(barn)
+            } catch (e: Exception) {
+                onError(e.message ?: "Unknown error")
+            }
         }
     }
+
 
     fun getBarns() {
         viewModelScope.launch {

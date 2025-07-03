@@ -11,7 +11,7 @@ data class CreateBarnRequest(
         fun fromBarn(b: Barn): CreateBarnRequest {
             return CreateBarnRequest(
                 name = b.name,
-                limit = b.limit.toInt(),
+                limit = b.limit.toIntOrNull() ?: 0,
                 id = 1
             )
         }
