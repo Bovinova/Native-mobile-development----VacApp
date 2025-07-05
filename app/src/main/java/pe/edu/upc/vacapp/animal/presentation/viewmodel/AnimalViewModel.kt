@@ -1,5 +1,6 @@
 package pe.edu.upc.vacapp.animal.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +13,10 @@ import pe.edu.upc.vacapp.barn.domain.model.Barn
 class AnimalViewModel(
     private val animalRepository: AnimalRepository
 ) : ViewModel() {
+
+    companion object {
+        private const val TAG = "AnimalViewModel"
+    }
 
     /* Declaration */
     //
@@ -37,12 +42,16 @@ class AnimalViewModel(
     fun addAnimal(animal: Animal) {
         viewModelScope.launch {
             try {
+                Log.d(TAG, "Adding animal: $animal")
                 animalRepository.addAnimal(animal)
+                Log.d(TAG, "Animal added successfully")
                 _addAnimalSuccess.value = true  // <-- ✅ Success
             } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "IllegalArgumentException when adding animal", e)
                 _errorMessage.value = e.message ?: "Error adding animal"
             } catch (e: Exception) {
-                _errorMessage.value = "Unknown error when adding the animal"
+                Log.e(TAG, "Exception when adding animal", e)
+                _errorMessage.value = "Unknown error when adding the animal: ${e.message}"
             }
         }
     }
@@ -53,13 +62,27 @@ class AnimalViewModel(
     //
     fun getAllAnimals() {
         viewModelScope.launch {
-            _animals.value = animalRepository.getAllAnimals()
+            try {
+                Log.d(TAG, "Getting all animals")
+                _animals.value = animalRepository.getAllAnimals()
+                Log.d(TAG, "Retrieved ${_animals.value.size} animals")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting all animals", e)
+                _errorMessage.value = "Error loading animals: ${e.message}"
+            }
         }
     }
     //
     fun getBarns() {
         viewModelScope.launch {
-            _barns.value = animalRepository.getBarns()
+            try {
+                Log.d(TAG, "Getting barns")
+                _barns.value = animalRepository.getBarns()
+                Log.d(TAG, "Retrieved ${_barns.value.size} barns")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting barns", e)
+                _errorMessage.value = "Error loading barns: ${e.message}"
+            }
         }
     }
 }

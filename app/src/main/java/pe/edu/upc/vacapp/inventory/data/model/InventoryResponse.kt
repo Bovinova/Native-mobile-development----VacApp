@@ -4,9 +4,10 @@ import android.annotation.SuppressLint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.DateTimeParseException
+import org.threeten.bp.temporal.ChronoUnit
 import pe.edu.upc.vacapp.inventory.domain.model.Inventory
 import pe.edu.upc.vacapp.inventory.domain.model.InventoryImage
-
 
 data class InventoryResponse(
     val id: Int,
@@ -18,20 +19,27 @@ data class InventoryResponse(
 ) {
     @SuppressLint("DefaultLocale")
     fun toInventory(): Inventory {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
-        val localDateTime = LocalDateTime.parse(vaccineDate, formatter)
-
-        val vaccineDateOnly = localDateTime.toLocalDate()
-        val formattedDate = vaccineDateOnly.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
+        // Use a date-only formatter for LocalDate
+        val outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val today = LocalDate.now()
 
-        val age = if ((today.monthValue > vaccineDateOnly.monthValue) ||
-            (today.monthValue == vaccineDateOnly.monthValue && today.dayOfMonth >= vaccineDateOnly.dayOfMonth)
-        ) {
-            today.year - vaccineDateOnly.year
-        } else {
-            today.year - vaccineDateOnly.year - 1
+        val parsedDate = try {
+            val dateTime = LocalDateTime.parse(vaccineDate, inputFormat)
+            dateTime.toLocalDate()
+        } catch (e: DateTimeParseException) {
+            // fallback: try just yyyy-MM-dd if time is missing
+            try {
+                LocalDate.parse(vaccineDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            } catch (e2: Exception) {
+                // fallback: today's date
+                today
+            }
         }
+
+        // Format the LocalDate using the date-only formatter
+        val formattedDate = parsedDate.format(outputFormat)
+        val age = ChronoUnit.YEARS.between(parsedDate, today).toInt()
 
         return Inventory(
             id = id,
