@@ -16,15 +16,26 @@ data class CampaignResponse(
     val stableId: Int,
 ) {
     fun toCampaign(): Campaign {
-        val formatterWithMillis = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-        val formatterWithoutMillis = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val fallbackFormatters = listOf(
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        )
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
         fun parseDateFlexible(date: String): LocalDateTime {
             return try {
-                LocalDateTime.parse(date, formatterWithMillis)
+                // Intenta con el ISO primero (más estándar y tolerante)
+                LocalDateTime.parse(date, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
             } catch (e: Exception) {
-                LocalDateTime.parse(date, formatterWithoutMillis)
+                // Si falla, intenta con los formatos definidos
+                for (formatter in fallbackFormatters) {
+                    try {
+                        return LocalDateTime.parse(date, formatter)
+                    } catch (_: Exception) {
+                    }
+                }
+                throw IllegalArgumentException("Invalid date format: $date")
             }
         }
 

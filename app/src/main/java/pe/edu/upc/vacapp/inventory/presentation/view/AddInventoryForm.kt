@@ -267,7 +267,7 @@ fun DatePickerTextField(
     textStyle: TextStyle = TextStyle.Default
 ) {
     val context = LocalContext.current
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS]")
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val calendar = Calendar.getInstance()
 
     val datePickerDialog = remember {
