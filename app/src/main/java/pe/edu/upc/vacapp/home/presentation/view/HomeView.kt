@@ -212,7 +212,8 @@ fun HomeView(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
+                    .height(150.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 itemsIndexed(userInfo.value.nextCampaigns) { index, campaign ->
                     Column(modifier = Modifier.fillMaxWidth()) {
