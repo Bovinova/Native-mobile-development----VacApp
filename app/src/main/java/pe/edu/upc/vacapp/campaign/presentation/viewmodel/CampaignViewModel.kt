@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import pe.edu.upc.vacapp.barn.domain.model.Barn
-import pe.edu.upc.vacapp.campaign.data.repository.CampaingRepository
+import pe.edu.upc.vacapp.campaign.data.repository.CampaignRepository
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
 
 class CampaignViewModel(
-    private val campaingRepository: CampaingRepository
+    private val campaignRepository: CampaignRepository
 ) : ViewModel() {
     private val _campaigns = MutableStateFlow<List<Campaign>>(emptyList())
     val campaigns: StateFlow<List<Campaign>> = _campaigns
@@ -20,21 +20,21 @@ class CampaignViewModel(
 
     fun addCanpaing(campaign: Campaign) {
         viewModelScope.launch {
-            campaingRepository.addCampaing(campaign)
+            campaignRepository.addCampaign(campaign)
         }
     }
 
     fun getCampaing() {
         viewModelScope.launch {
 
-            _campaigns.value = campaingRepository.getCampaing()
+            _campaigns.value = campaignRepository.getCampaign()
 
         }
     }
 
     fun getBarns() {
         viewModelScope.launch {
-            _barns.value = campaingRepository.getBarns()
+            _barns.value = campaignRepository.getBarns()
         }
     }
 }

@@ -3,23 +3,23 @@ package pe.edu.upc.vacapp.home.data.model
 import pe.edu.upc.vacapp.home.domain.model.UserInfo
 
 data class UserInfoResponse(
+    val id: Int,
     val name: String,
     val totalAnimals: Int,
     val totalCampaigns: Int,
     val totalStables: Int,
-    //val totalVaccines: Int,
-    //val campaignName: String, // Upcoming Event Name
-    //val campaignDate: DateTime // Upcoming Event Date
+    val totalVaccinations: Int,
+    val nextCampaigns: List<NextCampaignResponse>
 ) {
     fun toUserInfo(): UserInfo {
         return UserInfo(
+            id = id,
             name = name,
             totalAnimals = totalAnimals,
             totalCampaigns = totalCampaigns,
             totalBarns = totalStables,
-            //val totalVaccines: Int,
-            //val campaignName: String,
-            //val campaignDate: DateTime
+            nextCampaigns = nextCampaigns.map { it.toNextCampaign() },
+            totalVaccinations = totalVaccinations
         )
     }
 }

@@ -103,6 +103,7 @@ fun Navigation(
                 },
                 onSignOut = {
                     JwtStorage.clearToken()
+                    JwtStorage.clearUserId()
                     goToLogin()
                 }
             )

@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.home.presentation.viewmodel.HomeViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
@@ -85,7 +88,7 @@ fun HomeView(
                 .width(365.dp)
                 .height(95.dp)
                 .clickable { onTapAnimalsSection() }, // Make clickable
-        shape = RoundedCornerShape(5.dp),
+            shape = RoundedCornerShape(5.dp),
             colors =
                 CardDefaults.cardColors(
                     containerColor = Color.AlmondCream,
@@ -183,7 +186,11 @@ fun HomeView(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text("-", fontWeight = FontWeight.Bold, fontSize = 28.sp)
+                    Text(
+                        userInfo.value.totalVaccinations.toString(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 28.sp
+                    )
                     Text("Vaccines", fontWeight = FontWeight.Light, fontSize = 16.sp)
                 }
             }
@@ -202,184 +209,160 @@ fun HomeView(
                 textAlign = TextAlign.Center
             )
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
             ) {
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 5.dp), // Divider Space
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        "Foot and Mouth Disease Vaccination",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 14.sp,
-                        color = Color.Black,
-                        maxLines = 1
-                    )
-                    Text("10-May",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 16.sp,
-                        color = Color.Black
-                    )
-                }
-                Divider(
-                    color = androidx.compose.ui.graphics.Color.Black,
-                    thickness = 1.dp,
-                    modifier =
-                        Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 0.15.dp
-                            )
-                )
-            }
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 5.dp), // Divider Space
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        "Internal and External Deworming",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 14.sp,
-                        color = Color.Black,
-                        maxLines = 1
-                    )
-                    Text(
-                        "05-July",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 16.sp,
-                        color = Color.Black
-                    )
-                }
-                Divider(
-                    color = androidx.compose.ui.graphics.Color.Black,
-                    thickness = 1.dp,
-                    modifier =
-                        Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 0.15.dp
-                            )
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 25.dp)
-        ) {
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = { isButtonActive.value = !isButtonActive.value }
-            ) {
-                val icon = if (isButtonActive.value) R.drawable.x_circle else R.drawable.plus_circle
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp),
-                    tint = Color.Black
-
-                )
-            }
-
-            if (isButtonActive.value) {
-                Popup(
-                    alignment = Alignment.TopEnd,
-                    offset = IntOffset(-75, -395)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .background(Color.AlmondCream)
-                            .border(2.dp, Color.Black)
-                            .padding(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(15.dp),
-                    ) {
+                itemsIndexed(userInfo.value.nextCampaigns) { index, campaign ->
+                    Column(modifier = Modifier.fillMaxWidth()) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { onTapAnimal() }
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 5.dp), // Divider Space
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.cow),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp),
-                                tint = Color.Black
+                            Text(
+                                campaign.name,
+                                fontWeight = FontWeight.Light,
+                                fontSize = 14.sp,
+                                color = Color.Black,
+                                maxLines = 1
                             )
-                            Text("Animal",
-                                fontWeight = FontWeight.ExtraLight,
-                                fontSize = 20.sp,
+                            Text(
+                                campaign.startDate.format(DateTimeFormatter.ofPattern("dd-MMMM-YYYY")),
+                                fontWeight = FontWeight.Light,
+                                fontSize = 16.sp,
                                 color = Color.Black
                             )
                         }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { onTapAddCampaign() }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.megaphone),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp),
-                                tint = Color.Black
 
+                        // Solo dibuja el Divider si NO es el último elemento
+                        if (index < userInfo.value.nextCampaigns.lastIndex) {
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                color = androidx.compose.ui.graphics.Color.Black
                             )
-                            Text("Campaign",
-                                fontWeight = FontWeight.ExtraLight,
-                                fontSize = 20.sp,
-                                color = Color.Black)
                         }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { onTapInventory() }
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 25.dp)
+            ) {
+                IconButton(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    onClick = { isButtonActive.value = !isButtonActive.value }
+                ) {
+                    val icon =
+                        if (isButtonActive.value) R.drawable.x_circle else R.drawable.plus_circle
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(40.dp)
+                            .height(40.dp),
+                        tint = Color.Black
+
+                    )
+                }
+
+                if (isButtonActive.value) {
+                    Popup(
+                        alignment = Alignment.TopEnd,
+                        offset = IntOffset(-75, -395)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .background(Color.AlmondCream)
+                                .border(2.dp, Color.Black)
+                                .padding(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(15.dp),
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.resource_package),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp),
-                                tint = Color.Black
-                            )
-                            Text("Inventory",
-                                fontWeight = FontWeight.ExtraLight,
-                                fontSize = 20.sp,
-                                color = Color.Black)
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.clickable { onTapAddBarn() }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.barn),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp),
-                                tint = Color.Black
-                            )
-                            Text("Barn",
-                                fontWeight = FontWeight.ExtraLight,
-                                fontSize = 20.sp,
-                                color = Color.Black)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.clickable { onTapAnimal() }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.cow),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .height(24.dp),
+                                    tint = Color.Black
+                                )
+                                Text(
+                                    "Animal",
+                                    fontWeight = FontWeight.ExtraLight,
+                                    fontSize = 20.sp,
+                                    color = Color.Black
+                                )
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.clickable { onTapAddCampaign() }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.megaphone),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .height(24.dp),
+                                    tint = Color.Black
+
+                                )
+                                Text(
+                                    "Campaign",
+                                    fontWeight = FontWeight.ExtraLight,
+                                    fontSize = 20.sp,
+                                    color = Color.Black
+                                )
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.clickable { onTapInventory() }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.resource_package),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .height(24.dp),
+                                    tint = Color.Black
+                                )
+                                Text(
+                                    "Inventory",
+                                    fontWeight = FontWeight.ExtraLight,
+                                    fontSize = 20.sp,
+                                    color = Color.Black
+                                )
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.clickable { onTapAddBarn() }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.barn),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .height(24.dp),
+                                    tint = Color.Black
+                                )
+                                Text(
+                                    "Barn",
+                                    fontWeight = FontWeight.ExtraLight,
+                                    fontSize = 20.sp,
+                                    color = Color.Black
+                                )
+                            }
                         }
                     }
                 }

@@ -50,4 +50,17 @@ data class CampaignResponse(
             enddate = endDateTime.format(outputFormatter),
         )
     }
+
+    fun toCampaignEntity(userId: Int): CampaignEntity {
+        return CampaignEntity(
+            id = this.id,
+            name = this.name,
+            description = this.description,
+            startDate = this.startDate,
+            endDate = this.endDate,
+            barnId = this.stableId,
+            userId = userId,
+            synced = true
+        )
+    }
 }

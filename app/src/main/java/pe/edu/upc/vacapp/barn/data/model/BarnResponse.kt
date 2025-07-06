@@ -9,9 +9,19 @@ data class BarnResponse(
 ) {
     fun toBarn(): Barn {
         return Barn(
-            id= id,
+            id = id,
             name = name,
             limit = limit.toString()
+        )
+    }
+
+    fun toBarnEntity(userId: Int): BarnEntity {
+        return BarnEntity(
+            id = this.id,
+            name = this.name,
+            limit = this.limit.toString(),
+            userId = userId,
+            synced = true
         )
     }
 }
