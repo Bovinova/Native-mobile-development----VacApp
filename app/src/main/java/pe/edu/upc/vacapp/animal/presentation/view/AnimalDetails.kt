@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.animal.domain.model.Animal
 import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
@@ -163,8 +165,12 @@ fun AnimalDetails(
                                 fontSize = 12.sp,
                                 color = Color.Black
                             )
+                            val dateString = animal.birthDate
+                            val dateTime = LocalDateTime.parse(dateString)
+                            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                            val formattedDate = dateTime.format(formatter)
                             Text(
-                                animal.birthDate,
+                                formattedDate,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 24.sp,
                                 color = Color.Black

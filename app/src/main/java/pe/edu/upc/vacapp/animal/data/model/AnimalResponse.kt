@@ -41,14 +41,45 @@ data class AnimalResponse(
             id = id,
             name = name,
             breed = breed,
-            //TODO: Implement weight calculation or fetch from API (falta en el backend)
-            //weight = ,
             age = age,
             birthDate = formattedDate,
             barnId = stableId,
             location = location,
             image = AnimalImage.FromUrl(bovineImg),
             isMale = gender == "male"
+        )
+    }
+
+    fun toAnimalEntity(): AnimalEntity {
+        val localDateTime = try {
+            LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+        } catch (e: Exception) {
+            LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+        }
+
+        val birthDateOnly = localDateTime.toLocalDate()
+        val formattedDate = birthDateOnly.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        val today = LocalDate.now()
+
+        val age = if ((today.monthValue > birthDateOnly.monthValue) ||
+            (today.monthValue == birthDateOnly.monthValue && today.dayOfMonth >= birthDateOnly.dayOfMonth)
+        ) {
+            today.year - birthDateOnly.year
+        } else {
+            today.year - birthDateOnly.year - 1
+        }
+
+        return AnimalEntity(
+            id = this.id,
+            name = this.name,
+            gender = this.gender,
+            birthDate = this.birthDate,
+            age= age,
+            breed = this.breed,
+            location = this.location,
+            stableId = this.stableId,
+            imagePath = this.bovineImg,
+            synced = true
         )
     }
 }
