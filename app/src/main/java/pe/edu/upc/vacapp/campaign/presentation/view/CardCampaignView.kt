@@ -21,6 +21,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
 import pe.edu.upc.vacapp.ui.theme.Color
 
@@ -64,7 +66,7 @@ fun CardCampaignView(
                             append("Description: \n")
                         }
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Light, fontSize = 16.sp)) {
-                            append("Test ${campaign.description}")
+                            append(campaign.description)
                         }
                     },
                     color = Color.Black,
@@ -80,6 +82,10 @@ fun CardCampaignView(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                val dateString = campaign.startdate
+                val dateTime = LocalDateTime.parse(dateString)
+                val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                val formattedDate = dateTime.format(formatter)
                 Text(
                     "Start Date:",
                     fontWeight = FontWeight.Normal,
@@ -87,7 +93,7 @@ fun CardCampaignView(
                     color = Color.Black
                 )
                 Text(
-                    campaign.startdate,
+                    formattedDate,
                     fontWeight = FontWeight.Light,
                     fontSize = 16.sp,
                     color = Color.Black
@@ -98,6 +104,10 @@ fun CardCampaignView(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                val dateString = campaign.enddate
+                val dateTime = LocalDateTime.parse(dateString)
+                val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                val formattedDate = dateTime.format(formatter)
                 Text(
                     "End Date:",
                     fontWeight = FontWeight.Normal,
@@ -105,7 +115,7 @@ fun CardCampaignView(
                     color = Color.Black
                 )
                 Text(
-                    campaign.enddate,
+                    formattedDate,
                     fontWeight = FontWeight.Light,
                     fontSize = 16.sp,
                     color = Color.Black

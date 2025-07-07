@@ -15,6 +15,7 @@ import pe.edu.upc.vacapp.barn.domain.model.Barn
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
 import pe.edu.upc.vacapp.shared.isOnline
 import java.io.File
+import java.net.URL
 
 class AnimalRepository(
     private val animalService: AnimalService,
@@ -58,10 +59,21 @@ class AnimalRepository(
             if (response.isSuccessful) {
                 val animalsFromApi = response.body()?.map { it.toAnimalEntity() } ?: emptyList()
 
-                animalDao.clearAnimals()
-                animalsFromApi.forEach { animalDao.insertAnimal(it) }
+                animalsFromApi.forEach { animalEntity ->
+                    val localPath = downloadImageToInternalStorage(animalEntity.imagePath, animalEntity.id)
 
-                return@withContext animalsFromApi.map { it.toAnimal() }
+                    val existingAnimal = animalDao.getAnimalById(animalEntity.id)
+                    if (existingAnimal == null) {
+                        val animalWithUpdatedPath = animalEntity.copy(imagePath = localPath ?: animalEntity.imagePath)
+                        animalDao.insertAnimal(animalWithUpdatedPath)
+                    } else {
+                        if (localPath != null) {
+                            animalDao.updateSyncedStatus(animalEntity.id, true)
+                        }
+                    }
+                }
+
+                return@withContext animalDao.getAllAnimals().map { it.toAnimal() }
             }
         }
 
@@ -88,20 +100,22 @@ class AnimalRepository(
         return@withContext localBarns
     }
 
-    suspend fun copyFileToInternalStorage(sourceFile: File): File? = withContext(Dispatchers.IO) {
-        val context = Vacapp.instance.applicationContext
+    suspend fun downloadImageToInternalStorage(url: String, animalId: Int): String? =
+        withContext(Dispatchers.IO) {
+            val context = Vacapp.instance.applicationContext
+            val destFile = File(context.filesDir, "animal_$animalId.jpg")
 
-        return@withContext try {
-            val destFile = File(context.filesDir, "animal_${System.currentTimeMillis()}.jpg")
-            sourceFile.inputStream().use { input ->
-                destFile.outputStream().use { output ->
-                    input.copyTo(output)
+            return@withContext try {
+                val input = URL(url).openStream()
+                input.use { inputStream ->
+                    destFile.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
                 }
+                destFile.absolutePath
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
             }
-            destFile
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
         }
-    }
 }

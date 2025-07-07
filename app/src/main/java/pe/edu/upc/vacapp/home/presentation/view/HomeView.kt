@@ -215,35 +215,51 @@ fun HomeView(
                     .height(150.dp),
                 verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                itemsIndexed(userInfo.value.nextCampaigns) { index, campaign ->
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                if (userInfo.value.nextCampaigns.isEmpty()) {
+                    item {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 5.dp), // Divider Space
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
                         ) {
                             Text(
-                                campaign.name,
-                                fontWeight = FontWeight.Light,
-                                fontSize = 14.sp,
-                                color = Color.Black,
-                                maxLines = 1
-                            )
-                            Text(
-                                campaign.startDate.format(DateTimeFormatter.ofPattern("dd-MMMM-YYYY")),
+                                text = "No upcoming events",
                                 fontWeight = FontWeight.Light,
                                 fontSize = 16.sp,
                                 color = Color.Black
                             )
                         }
+                    }
+                } else {
+                    itemsIndexed(userInfo.value.nextCampaigns) { index, campaign ->
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 5.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(
+                                    campaign.name,
+                                    fontWeight = FontWeight.Light,
+                                    fontSize = 14.sp,
+                                    color = Color.Black,
+                                    maxLines = 1
+                                )
+                                Text(
+                                    campaign.startDate.format(DateTimeFormatter.ofPattern("dd-MMMM-YYYY")),
+                                    fontWeight = FontWeight.Light,
+                                    fontSize = 16.sp,
+                                    color = Color.Black
+                                )
+                            }
 
-                        // Solo dibuja el Divider si NO es el último elemento
-                        if (index < userInfo.value.nextCampaigns.lastIndex) {
-                            HorizontalDivider(
-                                thickness = 1.dp,
-                                color = androidx.compose.ui.graphics.Color.Black
-                            )
+                            if (index < userInfo.value.nextCampaigns.lastIndex) {
+                                HorizontalDivider(
+                                    thickness = 1.dp,
+                                    color = androidx.compose.ui.graphics.Color.Black
+                                )
+                            }
                         }
                     }
                 }

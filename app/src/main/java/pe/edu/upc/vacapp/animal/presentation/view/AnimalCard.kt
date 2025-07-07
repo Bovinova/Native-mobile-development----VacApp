@@ -77,11 +77,12 @@ fun AnimalCard(
 ) {
     Log.d("animal", animal.toString())
     val icon = if (animal.isMale) R.drawable.gender_male else R.drawable.gender_female
-    val imgUrl = when (val image = animal.image) {
+    val imgModel = when (val image = animal.image) {
         is AnimalImage.FromUrl -> image.url
-        is AnimalImage.FromFile -> ""
-        null -> ""
+        is AnimalImage.FromFile -> image.file
+        null -> R.drawable.add_image_placeholder
     }
+
 
     Card(
         modifier = Modifier
@@ -121,7 +122,7 @@ fun AnimalCard(
                 }
 
                 AsyncImage(
-                    model = imgUrl,
+                    model = imgModel,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pe.edu.upc.vacapp.animal.domain.model.Animal
 import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
+import java.io.File
 
 @Entity
 data class AnimalEntity(
@@ -44,8 +45,13 @@ data class AnimalEntity(
             birthDate = this.birthDate,
             barnId = this.stableId,
             location = this.location,
-            image = AnimalImage.FromUrl(this.imagePath),
+            image = if (imagePath.startsWith("/")) {
+                AnimalImage.FromFile(File(imagePath))
+            } else {
+                AnimalImage.FromUrl(imagePath)
+            },
             isMale = this.gender == "male"
         )
     }
+
 }

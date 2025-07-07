@@ -22,4 +22,7 @@ interface AnimalDao {
 
     @Query("DELETE FROM AnimalEntity")
     suspend fun clearAnimals()
+
+    @Query("SELECT * FROM AnimalEntity WHERE id = :id")
+    fun getAnimalById(id: Int): AnimalEntity?
 }
