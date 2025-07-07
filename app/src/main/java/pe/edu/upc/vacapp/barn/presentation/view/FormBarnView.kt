@@ -74,6 +74,7 @@ fun FormBarnView(
                         "Name",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 40.sp,
+                        color = Color.Black
                     )
                 },
                 textStyle = TextStyle(color = Color.Black)
@@ -97,7 +98,8 @@ fun FormBarnView(
                     Text(
                         "Limit",
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 40.sp
+                        fontSize = 40.sp,
+                        color = Color.Black
                     )
                 },
                 textStyle = TextStyle(color = Color.Black)

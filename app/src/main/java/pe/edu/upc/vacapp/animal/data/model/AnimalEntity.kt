@@ -17,10 +17,11 @@ data class AnimalEntity(
     val stableId: Int,
     val imagePath: String,
     val age: Int,
+    val userId: Int,
     val synced: Boolean = false
 ) {
     companion object {
-        fun fromAnimal(animal: Animal): AnimalEntity {
+        fun fromAnimal(animal: Animal, userId: Int): AnimalEntity {
             return AnimalEntity(
                 id = animal.id,
                 name = animal.name,
@@ -31,6 +32,7 @@ data class AnimalEntity(
                 stableId = animal.barnId,
                 imagePath = animal.image.toString(),
                 age = animal.age,
+                userId = userId,
                 synced = false
             )
         }
@@ -53,5 +55,4 @@ data class AnimalEntity(
             isMale = this.gender == "male"
         )
     }
-
 }

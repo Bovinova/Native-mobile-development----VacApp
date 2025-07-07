@@ -20,7 +20,6 @@ data class InventoryResponse(
     @SuppressLint("DefaultLocale")
     fun toInventory(): Inventory {
         val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
-        // Use a date-only formatter for LocalDate
         val outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val today = LocalDate.now()
 
@@ -28,18 +27,14 @@ data class InventoryResponse(
             val dateTime = LocalDateTime.parse(vaccineDate, inputFormat)
             dateTime.toLocalDate()
         } catch (e: DateTimeParseException) {
-            // fallback: try just yyyy-MM-dd if time is missing
             try {
                 LocalDate.parse(vaccineDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             } catch (e2: Exception) {
-                // fallback: today's date
                 today
             }
         }
 
-        // Format the LocalDate using the date-only formatter
         val formattedDate = parsedDate.format(outputFormat)
-        val age = ChronoUnit.YEARS.between(parsedDate, today).toInt()
 
         return Inventory(
             id = id,
@@ -48,6 +43,19 @@ data class InventoryResponse(
             vaccineDate = formattedDate,
             bovineId = bovineId,
             image = InventoryImage.FromUrl(vaccineImg)
+        )
+    }
+
+    fun toInventoryEntity(userId: Int): InventoryEntity {
+        return InventoryEntity(
+            id = this.id,
+            name = this.name,
+            vaccineType = this.vaccineType,
+            vaccineDate = this.vaccineDate,
+            bovineId = this.bovineId,
+            imagePath = this.vaccineImg,
+            userId = userId,
+            synced = true
         )
     }
 }

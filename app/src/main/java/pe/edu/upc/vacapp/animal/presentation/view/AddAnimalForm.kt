@@ -149,8 +149,10 @@ fun AddAnimalCard(
                     .padding(bottom = 20.dp)
                     .widthIn(min = 155.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.Black
                 ),
                 trailingIcon = {
                     IconButton(
@@ -165,7 +167,7 @@ fun AddAnimalCard(
                         )
                     }
                 },
-                label = { Text("Name") },
+                label = { Text("Name", color = Color.Black) },
                 value = newAnimal.value.name,
                 onValueChange = { newAnimal.value = newAnimal.value.copy(name = it) },
                 textStyle = TextStyle(color = Color.Black)
@@ -183,11 +185,13 @@ fun AddAnimalCard(
                     TextField(
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Black,
+                            unfocusedIndicatorColor = Color.Black
                         ),
                         value = newAnimal.value.breed,
-                        label = { Text("Breed") },
+                        label = { Text("Breed", color = Color.Black) },
                         onValueChange = { newAnimal.value = newAnimal.value.copy(breed = it) },
                         textStyle = TextStyle(color = Color.Black)
                     )
@@ -195,11 +199,13 @@ fun AddAnimalCard(
                     TextField(
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Black,
+                            unfocusedIndicatorColor = Color.Black
                         ),
                         value = newAnimal.value.weight.toString(),
-                        label = { Text("Weight") },
+                        label = { Text("Weight", color = Color.Black) },
                         onValueChange = { newWeightString ->
                             newAnimal.value = newAnimal.value.copy(
                                 weight = newWeightString.toDoubleOrNull() ?: newAnimal.value.weight
@@ -244,11 +250,13 @@ fun AddAnimalCard(
                     TextField(
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Black,
+                            unfocusedIndicatorColor = Color.Black
                         ),
                         value = newAnimal.value.location,
-                        label = { Text("Location") },
+                        label = { Text("Location", color = Color.Black) },
                         onValueChange = { newAnimal.value = newAnimal.value.copy(location = it) },
                         textStyle = TextStyle(color = Color.Black)
                     )
@@ -363,7 +371,7 @@ fun DatePickerTextField(
         value = date,
         onValueChange = { },
         readOnly = true,
-        label = { Text(label) },
+        label = { Text(label, color = Color.Black) },
         trailingIcon = {
             IconButton(onClick = { datePickerDialog.show() }) {
                 Icon(
@@ -374,8 +382,10 @@ fun DatePickerTextField(
             }
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Black,
+            unfocusedIndicatorColor = Color.Black
         ),
         textStyle = textStyle
     )
@@ -399,7 +409,7 @@ fun DropdownSelector(
             value = selectedItem.value?.name ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text(label) },
+            label = { Text(label, color = Color.Black) },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
@@ -411,8 +421,10 @@ fun DropdownSelector(
             modifier = Modifier
                 .fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Black
             ),
             textStyle = textStyle
         )

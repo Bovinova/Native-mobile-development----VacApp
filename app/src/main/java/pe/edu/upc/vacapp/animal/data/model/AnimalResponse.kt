@@ -50,7 +50,7 @@ data class AnimalResponse(
         )
     }
 
-    fun toAnimalEntity(): AnimalEntity {
+    fun toAnimalEntity(userId: Int): AnimalEntity {
         val localDateTime = try {
             LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))
         } catch (e: Exception) {
@@ -74,11 +74,12 @@ data class AnimalResponse(
             name = this.name,
             gender = this.gender,
             birthDate = this.birthDate,
-            age= age,
+            age = age,
             breed = this.breed,
             location = this.location,
             stableId = this.stableId,
             imagePath = this.bovineImg,
+            userId = userId,
             synced = true
         )
     }

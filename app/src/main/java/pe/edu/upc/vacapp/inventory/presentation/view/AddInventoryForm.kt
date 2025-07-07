@@ -131,10 +131,12 @@ fun AddInventoryCard(
                     .padding(bottom = 20.dp)
                     .widthIn(min = 155.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.Black
                 ),
-                label = { Text("Name") },
+                label = { Text("Name", color = Color.Black) },
                 value = newInventory.value.name,
                 onValueChange = { newInventory.value = newInventory.value.copy(name = it) },
                 textStyle = TextStyle(color = Color.Black)
@@ -152,12 +154,16 @@ fun AddInventoryCard(
                     TextField(
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Black,
+                            unfocusedIndicatorColor = Color.Black
                         ),
                         value = newInventory.value.vaccineType,
-                        label = { Text("Vaccine Type") },
-                        onValueChange = { newInventory.value = newInventory.value.copy(vaccineType = it) },
+                        label = { Text("Vaccine Type", color = Color.Black) },
+                        onValueChange = {
+                            newInventory.value = newInventory.value.copy(vaccineType = it)
+                        },
                         textStyle = TextStyle(color = Color.Black)
                     )
                 }
@@ -290,7 +296,7 @@ fun DatePickerTextField(
         value = date,
         onValueChange = { },
         readOnly = true,
-        label = { Text(label) },
+        label = { Text(label, color = Color.Black) },
         trailingIcon = {
             IconButton(onClick = { datePickerDialog.show() }) {
                 Icon(
@@ -301,8 +307,10 @@ fun DatePickerTextField(
             }
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Black,
+            unfocusedIndicatorColor = Color.Black
         ),
         textStyle = textStyle
     )
@@ -326,7 +334,7 @@ fun DropdownSelector(
             value = selectedItem.value?.name ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text(label) },
+            label = { Text(label, color = Color.Black) },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
@@ -338,8 +346,10 @@ fun DropdownSelector(
             modifier = Modifier
                 .fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Black
             ),
             textStyle = textStyle
         )

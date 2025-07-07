@@ -23,7 +23,8 @@ class AnimalRepository(
     private val barnDao: BarnDao
 ) {
     suspend fun addAnimal(animal: Animal) = withContext(Dispatchers.IO) {
-        val animalEntity = AnimalEntity.fromAnimal(animal)
+        val userId = JwtStorage.getUserId() ?: throw Exception("User not authenticated")
+        val animalEntity = AnimalEntity.fromAnimal(animal, userId)
         animalDao.insertAnimal(animalEntity)
 
         if (isOnline()) {
@@ -51,13 +52,15 @@ class AnimalRepository(
     }
 
     suspend fun getAllAnimals(): List<Animal> = withContext(Dispatchers.IO) {
-        val localAnimals = animalDao.getAllAnimals().map { it.toAnimal() }
+        val userId = JwtStorage.getUserId() ?: throw Exception("User not authenticated")
+
+        val localAnimals = animalDao.getAnimalsByUserId(userId).map { it.toAnimal() }
 
         if (isOnline()) {
             val response = animalService.getAllAnimals()
 
             if (response.isSuccessful) {
-                val animalsFromApi = response.body()?.map { it.toAnimalEntity() } ?: emptyList()
+                val animalsFromApi = response.body()?.map { it.toAnimalEntity(userId) } ?: emptyList()
 
                 animalsFromApi.forEach { animalEntity ->
                     val localPath = downloadImageToInternalStorage(animalEntity.imagePath, animalEntity.id)
@@ -73,7 +76,7 @@ class AnimalRepository(
                     }
                 }
 
-                return@withContext animalDao.getAllAnimals().map { it.toAnimal() }
+                return@withContext animalDao.getAnimalsByUserId(userId).map { it.toAnimal() }
             }
         }
 

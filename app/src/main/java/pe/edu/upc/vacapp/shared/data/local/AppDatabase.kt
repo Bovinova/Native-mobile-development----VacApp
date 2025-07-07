@@ -12,6 +12,8 @@ import pe.edu.upc.vacapp.home.data.local.NextCampaignDao
 import pe.edu.upc.vacapp.home.data.local.UserInfoDao
 import pe.edu.upc.vacapp.home.data.model.NextCampaignEntity
 import pe.edu.upc.vacapp.home.data.model.UserInfoEntity
+import pe.edu.upc.vacapp.inventory.data.local.InventoryDao
+import pe.edu.upc.vacapp.inventory.data.model.InventoryEntity
 
 @Database(
     entities = [
@@ -19,7 +21,8 @@ import pe.edu.upc.vacapp.home.data.model.UserInfoEntity
         CampaignEntity::class,
         UserInfoEntity::class,
         NextCampaignEntity::class,
-        AnimalEntity::class
+        AnimalEntity::class,
+        InventoryEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -30,4 +33,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userInfoDao(): UserInfoDao
     abstract fun nextCampaignDao(): NextCampaignDao
     abstract fun animalDao(): AnimalDao
+    abstract fun inventoryDao(): InventoryDao
 }

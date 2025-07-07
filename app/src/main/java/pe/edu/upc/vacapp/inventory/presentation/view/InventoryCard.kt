@@ -76,10 +76,10 @@ fun InventoryCard(
     onTap: () -> Unit = {}
 ) {
     Log.d("inventory", inventory.toString())
-    val imgUrl = when (val image = inventory.image) {
+    val imgModel = when (val image = inventory.image) {
         is InventoryImage.FromUrl -> image.url
-        is InventoryImage.FromFile -> ""
-        null -> ""
+        is InventoryImage.FromFile -> image.file
+        null -> R.drawable.add_image_placeholder
     }
 
     Card(
@@ -115,7 +115,7 @@ fun InventoryCard(
                 }
 
                 AsyncImage(
-                    model = imgUrl,
+                    model = imgModel,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

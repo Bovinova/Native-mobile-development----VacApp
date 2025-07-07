@@ -17,6 +17,9 @@ interface AnimalDao {
     @Query("SELECT * FROM AnimalEntity")
     suspend fun getAllAnimals(): List<AnimalEntity>
 
+    @Query("SELECT * FROM AnimalEntity WHERE userId = :userId")
+    suspend fun getAnimalsByUserId(userId: Int): List<AnimalEntity>
+
     @Query("UPDATE AnimalEntity SET synced = :synced WHERE id = :animalId")
     suspend fun updateSyncedStatus(animalId: Int, synced: Boolean)
 
@@ -26,3 +29,4 @@ interface AnimalDao {
     @Query("SELECT * FROM AnimalEntity WHERE id = :id")
     fun getAnimalById(id: Int): AnimalEntity?
 }
+
