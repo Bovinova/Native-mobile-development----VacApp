@@ -20,4 +20,13 @@ interface CampaignDao {
 
     @Delete
     suspend fun delete(campaign: CampaignEntity)
+
+    @Query("DELETE FROM CampaignEntity WHERE id = :id")
+    fun deleteById(id: Int)
+
+    @Query("UPDATE CampaignEntity SET barnId = :newBarnId WHERE barnId = :oldBarnId")
+    fun updateBarnId(oldBarnId: Int, newBarnId: Int)
+
+    @Query("SELECT MAX(id) FROM CampaignEntity")
+    fun getLastId(): Int?
 }

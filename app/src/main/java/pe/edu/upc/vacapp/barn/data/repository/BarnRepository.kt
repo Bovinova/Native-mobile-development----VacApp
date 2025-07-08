@@ -1,6 +1,5 @@
 package pe.edu.upc.vacapp.barn.data.repository
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pe.edu.upc.vacapp.barn.data.local.BarnDao
@@ -8,17 +7,18 @@ import pe.edu.upc.vacapp.barn.data.model.BarnEntity
 import pe.edu.upc.vacapp.barn.data.model.CreateBarnRequest
 import pe.edu.upc.vacapp.barn.data.remote.BarnService
 import pe.edu.upc.vacapp.barn.domain.model.Barn
+import pe.edu.upc.vacapp.shared.createPendingOperation
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
+import pe.edu.upc.vacapp.shared.data.local.PendingOperationDao
 import pe.edu.upc.vacapp.shared.extractErrorMessage
 import pe.edu.upc.vacapp.shared.isOnline
 
 class BarnRepository(
     private val barnService: BarnService,
-    private val barnDao: BarnDao
+    private val barnDao: BarnDao,
+    private val pendingOperationDao: PendingOperationDao
 ) {
-    suspend fun addBarn(
-        barn: Barn
-    ) = withContext(Dispatchers.IO) {
+    suspend fun addBarn(barn: Barn) = withContext(Dispatchers.IO) {
         val userId = JwtStorage.getUserId()
 
         if (userId == null) {
@@ -34,8 +34,16 @@ class BarnRepository(
                 val response = barnService.createBarn(data)
 
                 if (response.isSuccessful) {
-                    // Marcar como sincronizado
-                    barnDao.updateSyncedStatus(barn.id, true)
+                    val barnFromApi = response.body()
+
+                    if (barnFromApi != null) {
+                        // Eliminar el barn temporal (id 0)
+                        barnDao.deleteById(barn.id)
+
+                        // Insertar el barn con el id real
+                        val newBarnEntity = barnFromApi.toBarnEntity(userId)
+                        barnDao.insert(newBarnEntity)
+                    }
                 } else if (response.code() == 400) {
                     val errorMessage = extractErrorMessage(response.errorBody()?.string())
                     throw Exception(errorMessage)
@@ -43,25 +51,22 @@ class BarnRepository(
                     throw Exception("Unexpected error: ${response.code()}")
                 }
             } catch (e: Exception) {
-                // Si falla la sincronización, queda pendiente
+                val pendingOperation = createPendingOperation(
+                    entity = "barn",
+                    data = barn,
+                    localId = barn.id
+                )
+                pendingOperationDao.insert(pendingOperation)
                 throw Exception("Error de red: ${e.message}")
             }
+        } else {
+            val pendingOperation = createPendingOperation(
+                entity = "barn",
+                data = barn,
+                localId = barn.id
+            )
+            pendingOperationDao.insert(pendingOperation)
         }
-        // Si está offline, lo dejamos pendiente
-
-        /* val data = CreateBarnRequest.fromBarn(barn)
-         val response = barnService.createBarn(data)
-
-         if (response.isSuccessful) {
-             Log.d("prueba", response.body().toString())
-         }
-         else if (response.code() == 400) {
-             val errorMessage = extractErrorMessage(response.errorBody()?.string())
-             throw Exception(errorMessage)
-         }
-         else {
-             throw Exception("Unexpected error: ${response.code()}")
-         }*/
     }
 
     suspend fun getBarns(): List<Barn> = withContext(Dispatchers.IO) {
@@ -87,4 +92,6 @@ class BarnRepository(
         }
         return@withContext localBarns
     }
+
+
 }

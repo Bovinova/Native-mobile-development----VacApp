@@ -43,6 +43,7 @@ data class CampaignResponse(
         val endDateTime = parseDateFlexible(endDate)
 
         return Campaign(
+            id = this.id,
             barnId = stableId,
             name = name,
             description = description,

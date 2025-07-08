@@ -5,18 +5,24 @@ import pe.edu.upc.vacapp.campaign.data.local.CampaignDao
 import pe.edu.upc.vacapp.campaign.data.remote.CampaignService
 import pe.edu.upc.vacapp.campaign.data.repository.CampaignRepository
 import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getAppDatabase
+import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getPendingOperationDao
 import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getRetrofit
 
 object DataModule {
     fun getCampaignRepository(): CampaignRepository {
-        return CampaignRepository(getCampaingService(), getCampaingDao(), getBarnDao())
+        return CampaignRepository(
+            getCampaignService(),
+            getCampaignDao(),
+            getBarnDao(),
+            getPendingOperationDao()
+        )
     }
 
-    fun getCampaingDao(): CampaignDao {
+    fun getCampaignDao(): CampaignDao {
         return getAppDatabase().campaignDao()
     }
 
-    fun getCampaingService(): CampaignService {
+    fun getCampaignService(): CampaignService {
         return getRetrofit().create(CampaignService::class.java)
     }
 }

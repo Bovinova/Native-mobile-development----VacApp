@@ -3,6 +3,7 @@ package pe.edu.upc.vacapp
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
+import pe.edu.upc.vacapp.shared.data.remote.NetworkMonitor
 
 class Vacapp : Application() {
     companion object {
@@ -15,5 +16,6 @@ class Vacapp : Application() {
         instance = this
         AndroidThreeTen.init(this)
         JwtStorage.init(applicationContext)
+        NetworkMonitor.startMonitoring()
     }
 }

@@ -13,7 +13,7 @@ interface CampaignService {
     suspend fun createCampaign(
         @Body
         campaign: CreateCampaignRequest
-    ): Response<Any>
+    ): Response<CampaignResponse>
 
     @GET("campaign/all-campaigns")
     suspend fun getCampaign(): Response<List<CampaignResponse>>

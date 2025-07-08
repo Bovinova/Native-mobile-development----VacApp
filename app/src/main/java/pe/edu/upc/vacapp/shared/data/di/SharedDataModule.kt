@@ -4,6 +4,7 @@ import androidx.room.Room
 import okhttp3.OkHttpClient
 import pe.edu.upc.vacapp.Vacapp
 import pe.edu.upc.vacapp.shared.data.local.AppDatabase
+import pe.edu.upc.vacapp.shared.data.local.PendingOperationDao
 import pe.edu.upc.vacapp.shared.data.remote.ApiConstants
 import pe.edu.upc.vacapp.shared.data.remote.AuthInterceptor
 import retrofit2.Retrofit
@@ -38,5 +39,9 @@ object SharedDataModule {
             ).build()
         }
         return dbInstance!!
+    }
+
+    fun getPendingOperationDao(): PendingOperationDao {
+        return getAppDatabase().pendingOperationDao()
     }
 }

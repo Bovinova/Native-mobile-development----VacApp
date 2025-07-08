@@ -17,21 +17,16 @@ data class CreateCampaignRequest(
 ) {
     companion object {
         fun fromCampaign(c: Campaign): CreateCampaignRequest {
-            val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            val startDateFormated = LocalDate.parse(c.startdate, dateFormatter)
-            val endDateFormated = LocalDate.parse(c.enddate, dateFormatter)
-
             return CreateCampaignRequest(
                 name = c.name,
                 description = c.description,
-                startDate = startDateFormated.toString(),
-                endDate = endDateFormated.toString(),
+                startDate = c.startdate,
+                endDate = c.enddate,
                 status = "",
                 goals = emptyList<Any>(),
                 channels = emptyList<Any>(),
                 stableId = c.barnId
             )
-
         }
     }
 }

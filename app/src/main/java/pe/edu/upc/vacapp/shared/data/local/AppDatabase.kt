@@ -14,6 +14,7 @@ import pe.edu.upc.vacapp.home.data.model.NextCampaignEntity
 import pe.edu.upc.vacapp.home.data.model.UserInfoEntity
 import pe.edu.upc.vacapp.inventory.data.local.InventoryDao
 import pe.edu.upc.vacapp.inventory.data.model.InventoryEntity
+import pe.edu.upc.vacapp.shared.data.model.PendingOperationEntity
 
 @Database(
     entities = [
@@ -22,7 +23,8 @@ import pe.edu.upc.vacapp.inventory.data.model.InventoryEntity
         UserInfoEntity::class,
         NextCampaignEntity::class,
         AnimalEntity::class,
-        InventoryEntity::class
+        InventoryEntity::class,
+        PendingOperationEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -34,4 +36,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun nextCampaignDao(): NextCampaignDao
     abstract fun animalDao(): AnimalDao
     abstract fun inventoryDao(): InventoryDao
+    abstract fun pendingOperationDao(): PendingOperationDao
 }

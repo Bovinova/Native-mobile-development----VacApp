@@ -2,31 +2,13 @@ package pe.edu.upc.vacapp.campaign.presentation.view
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -41,16 +23,16 @@ import pe.edu.upc.vacapp.barn.domain.model.Barn
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
 import pe.edu.upc.vacapp.campaign.presentation.viewmodel.CampaignViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
-import java.util.Calendar
+import java.util.*
 
 @Composable
-
 fun AddCampaignView(
     goHome: () -> Unit = {},
     viewModel: CampaignViewModel
 ) {
     val barns = viewModel.barn.collectAsState()
     val campaign = remember { mutableStateOf(Campaign()) }
+
     Card(
         modifier = Modifier
             .width(356.dp)
@@ -76,21 +58,11 @@ fun AddCampaignView(
                     unfocusedIndicatorColor = Color.Black
                 ),
                 value = campaign.value.name,
-                onValueChange = {
-                    campaign.value = campaign.value.copy(name = it)
-                },
-
-                label = {
-                    Text(
-                        "Name",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 30.sp,
-                        color = Color.Black
-                    )
-                },
+                onValueChange = { campaign.value = campaign.value.copy(name = it) },
+                label = { Text("Name", fontWeight = FontWeight.SemiBold, fontSize = 30.sp, color = Color.Black) },
                 textStyle = TextStyle(color = Color.Black)
-
             )
+
             TextField(
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
@@ -99,45 +71,29 @@ fun AddCampaignView(
                     unfocusedIndicatorColor = Color.Black
                 ),
                 value = campaign.value.description,
-                onValueChange = {
-                    campaign.value = campaign.value.copy(description = it)
-                },
-
-                label = {
-                    Text(
-                        "Description",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 30.sp,
-                        color = Color.Black
-                    )
-                },
+                onValueChange = { campaign.value = campaign.value.copy(description = it) },
+                label = { Text("Description", fontWeight = FontWeight.SemiBold, fontSize = 30.sp, color = Color.Black) },
                 textStyle = TextStyle(color = Color.Black)
-
             )
+
             Row {
                 DropdownSelector(
                     label = "Barn",
                     items = barns.value,
-                    onItemSelected = { barn ->
-                        campaign.value = campaign.value.copy(barnId = barn.id)
-                    }
+                    onItemSelected = { barn -> campaign.value = campaign.value.copy(barnId = barn.id) }
                 )
             }
 
             DatePickerTextField(
                 label = "Start date",
                 date = campaign.value.startdate,
-                onDateChange = {
-                    campaign.value = campaign.value.copy(startdate = it)
-                }
+                onDateChange = { campaign.value = campaign.value.copy(startdate = it) }
             )
 
             DatePickerTextField(
                 label = "End date",
                 date = campaign.value.enddate,
-                onDateChange = {
-                    campaign.value = campaign.value.copy(enddate = it)
-                }
+                onDateChange = { campaign.value = campaign.value.copy(enddate = it) }
             )
 
             Row(
@@ -146,26 +102,13 @@ fun AddCampaignView(
                     .padding(end = 10.dp),
                 horizontalArrangement = Arrangement.End
             ) {
-                IconButton(
-                    onClick = { goHome() }
-                ) {
-                    Icon(
-                        painterResource(R.drawable.x_circle),
-                        null,
-                        modifier = Modifier.size(45.dp)
-                    )
+                IconButton(onClick = { goHome() }) {
+                    Icon(painterResource(R.drawable.x_circle), null, modifier = Modifier.size(45.dp))
                 }
-                IconButton(
-                    onClick = { viewModel.addCanpaing(campaign.value) }
-                ) {
-                    Icon(
-                        painterResource(R.drawable.check_circle), null,
-                        modifier = Modifier.size(45.dp)
-                    )
+                IconButton(onClick = { viewModel.addCanpaing(campaign.value) }) {
+                    Icon(painterResource(R.drawable.check_circle), null, modifier = Modifier.size(45.dp))
                 }
             }
-
-
         }
     }
 }
@@ -177,7 +120,6 @@ fun DatePickerTextField(
     onDateChange: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val calendar = Calendar.getInstance()
 
     val datePickerDialog = remember {
@@ -185,7 +127,7 @@ fun DatePickerTextField(
             context,
             { _, year, month, dayOfMonth ->
                 val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                onDateChange(selectedDate.format(formatter))
+                onDateChange(selectedDate.atStartOfDay().toString())
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -193,20 +135,26 @@ fun DatePickerTextField(
         )
     }
 
+    val displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val displayDate = if (date.isNotBlank() && date.length >= 10) {
+        try {
+            LocalDate.parse(date.substring(0, 10)).format(displayFormatter)
+        } catch (e: Exception) {
+            ""
+        }
+    } else {
+        ""
+    }
+
     TextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp),
-        value = date,
-        onValueChange = { },
+        value = displayDate,
+        onValueChange = {},
         readOnly = true,
         label = {
-            Text(
-                label,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 30.sp,
-                color = Color.Black
-            )
+            Text(label, fontWeight = FontWeight.SemiBold, fontSize = 30.sp, color = Color.Black)
         },
         trailingIcon = {
             IconButton(onClick = { datePickerDialog.show() }) {
@@ -231,25 +179,18 @@ fun DatePickerTextField(
 fun DropdownSelector(
     label: String,
     items: List<Barn>,
-    onItemSelected: (Barn) -> Unit,
+    onItemSelected: (Barn) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf<Barn?>(null) }
 
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    Box(modifier = Modifier.fillMaxWidth()) {
         TextField(
             value = selectedItem.value?.name ?: "",
             onValueChange = {},
             readOnly = true,
             label = {
-                Text(
-                    label,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 30.sp,
-                    color = Color.Black
-                )
+                Text(label, fontWeight = FontWeight.SemiBold, fontSize = 30.sp, color = Color.Black)
             },
             trailingIcon = {
                 Icon(
@@ -259,8 +200,7 @@ fun DropdownSelector(
                     tint = Color.Black
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,

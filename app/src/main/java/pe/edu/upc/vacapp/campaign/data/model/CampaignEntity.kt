@@ -32,6 +32,7 @@ data class CampaignEntity(
 
     fun toCampaign(): Campaign {
         return Campaign(
+            id = this.id,
             name = this.name,
             description = this.description,
             startdate = this.startDate,
@@ -39,4 +40,5 @@ data class CampaignEntity(
             barnId = this.barnId
         )
     }
+
 }

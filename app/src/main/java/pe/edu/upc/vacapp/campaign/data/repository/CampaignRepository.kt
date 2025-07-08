@@ -1,6 +1,5 @@
 package pe.edu.upc.vacapp.campaign.data.repository
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pe.edu.upc.vacapp.barn.data.local.BarnDao
@@ -10,25 +9,23 @@ import pe.edu.upc.vacapp.campaign.data.model.CampaignEntity
 import pe.edu.upc.vacapp.campaign.data.model.CreateCampaignRequest
 import pe.edu.upc.vacapp.campaign.data.remote.CampaignService
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
+import pe.edu.upc.vacapp.shared.createPendingOperation
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
+import pe.edu.upc.vacapp.shared.data.local.PendingOperationDao
 import pe.edu.upc.vacapp.shared.isOnline
 
 class CampaignRepository(
     private val campaignService: CampaignService,
     private val campaignDao: CampaignDao,
-    private val barnDao: BarnDao
+    private val barnDao: BarnDao,
+    private val pendingOperationDao: PendingOperationDao
 ) {
     suspend fun addCampaign(campaign: Campaign) = withContext(Dispatchers.IO) {
-        val userId = JwtStorage.getUserId()
+        val userId = JwtStorage.getUserId() ?: throw Exception("User not authenticated")
 
-        if (userId == null) {
-            throw Exception("User not authenticated")
-        }
-
-        val generatedId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
-
+        val lastId = campaignDao.getLastId() ?: 0
+        val generatedId = lastId + 1
         val campaignEntity = CampaignEntity.fromCampaign(campaign, userId, generatedId)
-
         campaignDao.insert(campaignEntity)
 
         if (isOnline()) {
@@ -37,13 +34,47 @@ class CampaignRepository(
                 val response = campaignService.createCampaign(data)
 
                 if (response.isSuccessful) {
-                    campaignDao.updateSyncedStatus(generatedId, true)
+                    val campaignFromApi = response.body()
+
+                    if (campaignFromApi != null) {
+                        // Eliminar el provisional
+                        campaignDao.deleteById(generatedId)
+
+                        // Insertar la campaña con ID real
+                        val newCampaignEntity = campaignFromApi.toCampaignEntity(userId)
+                        campaignDao.insert(newCampaignEntity)
+
+                        // Eliminar la operación pendiente si la hubieras creado (opcional)
+                        pendingOperationDao.deleteByEntityAndId("campaign", generatedId)
+                    }
+                } else {
+                    val pendingOperation = createPendingOperation(
+                        entity = "campaign",
+                        data = campaign,
+                        localId = generatedId
+                    )
+                    pendingOperationDao.insert(pendingOperation)
+                    throw Exception("Error: ${response.code()}")
                 }
             } catch (e: Exception) {
-                //TODO
+                val pendingOperation = createPendingOperation(
+                    entity = "campaign",
+                    data = campaign,
+                    localId = generatedId
+                )
+                pendingOperationDao.insert(pendingOperation)
+                throw Exception("Error de red: ${e.message}")
             }
+        } else {
+            val pendingOperation = createPendingOperation(
+                entity = "campaign",
+                data = campaign,
+                localId = generatedId
+            )
+            pendingOperationDao.insert(pendingOperation)
         }
     }
+
 
     suspend fun getCampaign(): List<Campaign> = withContext(Dispatchers.IO) {
         val userId = JwtStorage.getUserId()

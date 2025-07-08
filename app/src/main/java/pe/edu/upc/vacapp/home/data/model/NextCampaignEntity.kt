@@ -25,11 +25,25 @@ data class NextCampaignEntity(
     }
 
     fun toNextCampaign(): NextCampaign {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val possibleFormatters = listOf(
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+        )
+
+        val parsedDate = possibleFormatters.firstNotNullOfOrNull { formatter ->
+            try {
+                LocalDateTime.parse(this.startDate, formatter)
+            } catch (_: Exception) {
+                null
+            }
+        } ?: throw IllegalArgumentException("Invalid date format: ${this.startDate}")
+
         return NextCampaign(
             id = this.id,
             name = this.name,
-            startDate = LocalDateTime.parse(this.startDate, formatter)
+            startDate = parsedDate
         )
     }
+
 }

@@ -31,7 +31,6 @@ fun BarnCardView(
     Card(
         modifier = Modifier
             .width(380.dp)
-            .height(210.dp)
             .padding(16.dp),
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(
@@ -51,7 +50,8 @@ fun BarnCardView(
                 fontWeight = FontWeight.Normal,
                 fontSize = 45.sp,
                 textAlign = TextAlign.Center,
-                color = Color.Black
+                color = Color.Black,
+                lineHeight = 50.sp
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(
