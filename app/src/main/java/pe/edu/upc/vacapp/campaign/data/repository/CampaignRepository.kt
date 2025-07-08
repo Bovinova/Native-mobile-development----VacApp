@@ -9,6 +9,7 @@ import pe.edu.upc.vacapp.campaign.data.model.CampaignEntity
 import pe.edu.upc.vacapp.campaign.data.model.CreateCampaignRequest
 import pe.edu.upc.vacapp.campaign.data.remote.CampaignService
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
+import pe.edu.upc.vacapp.home.data.local.UserInfoDao
 import pe.edu.upc.vacapp.shared.createPendingOperation
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
 import pe.edu.upc.vacapp.shared.data.local.PendingOperationDao
@@ -18,7 +19,8 @@ class CampaignRepository(
     private val campaignService: CampaignService,
     private val campaignDao: CampaignDao,
     private val barnDao: BarnDao,
-    private val pendingOperationDao: PendingOperationDao
+    private val pendingOperationDao: PendingOperationDao,
+    private val userInfoDao: UserInfoDao
 ) {
     suspend fun addCampaign(campaign: Campaign) = withContext(Dispatchers.IO) {
         val userId = JwtStorage.getUserId() ?: throw Exception("User not authenticated")
@@ -26,7 +28,9 @@ class CampaignRepository(
         val lastId = campaignDao.getLastId() ?: 0
         val generatedId = lastId + 1
         val campaignEntity = CampaignEntity.fromCampaign(campaign, userId, generatedId)
+
         campaignDao.insert(campaignEntity)
+        userInfoDao.increaseTotalCampaigns(userId)
 
         if (isOnline()) {
             try {
@@ -37,10 +41,8 @@ class CampaignRepository(
                     val campaignFromApi = response.body()
 
                     if (campaignFromApi != null) {
-                        // Eliminar el provisional
                         campaignDao.deleteById(generatedId)
 
-                        // Insertar la campaña con ID real
                         val newCampaignEntity = campaignFromApi.toCampaignEntity(userId)
                         campaignDao.insert(newCampaignEntity)
 
@@ -57,20 +59,20 @@ class CampaignRepository(
                     throw Exception("Error: ${response.code()}")
                 }
             } catch (e: Exception) {
-                val pendingOperation = createPendingOperation(
-                    entity = "campaign",
-                    data = campaign,
-                    localId = generatedId
-                )
-                pendingOperationDao.insert(pendingOperation)
                 throw Exception("Error de red: ${e.message}")
             }
         } else {
+            val barn = barnDao.getBarnById(campaign.barnId)
+                ?: throw Exception("Barn not found for campaign")
+
+            val localId = if (!barn.synced) barn.id else 0
+
             val pendingOperation = createPendingOperation(
                 entity = "campaign",
-                data = campaign,
-                localId = generatedId
+                data = campaignEntity,
+                localId = localId
             )
+
             pendingOperationDao.insert(pendingOperation)
         }
     }

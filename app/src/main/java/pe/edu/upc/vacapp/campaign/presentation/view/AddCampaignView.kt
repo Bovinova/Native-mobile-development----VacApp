@@ -86,14 +86,14 @@ fun AddCampaignView(
 
             DatePickerTextField(
                 label = "Start date",
-                date = campaign.value.startdate,
-                onDateChange = { campaign.value = campaign.value.copy(startdate = it) }
+                date = campaign.value.startDate,
+                onDateChange = { campaign.value = campaign.value.copy(startDate = it) }
             )
 
             DatePickerTextField(
                 label = "End date",
-                date = campaign.value.enddate,
-                onDateChange = { campaign.value = campaign.value.copy(enddate = it) }
+                date = campaign.value.endDate,
+                onDateChange = { campaign.value = campaign.value.copy(endDate = it) }
             )
 
             Row(

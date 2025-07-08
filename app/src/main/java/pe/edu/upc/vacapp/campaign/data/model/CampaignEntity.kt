@@ -21,8 +21,8 @@ data class CampaignEntity(
                 id = generatedId,
                 name = c.name,
                 description = c.description,
-                startDate = c.startdate,
-                endDate = c.enddate,
+                startDate = c.startDate,
+                endDate = c.endDate,
                 barnId = c.barnId,
                 userId = userId,
                 synced = false
@@ -35,8 +35,8 @@ data class CampaignEntity(
             id = this.id,
             name = this.name,
             description = this.description,
-            startdate = this.startDate,
-            enddate = this.endDate,
+            startDate = this.startDate,
+            endDate = this.endDate,
             barnId = this.barnId
         )
     }

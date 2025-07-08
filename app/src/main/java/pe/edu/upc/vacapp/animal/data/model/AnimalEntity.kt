@@ -3,8 +3,6 @@ package pe.edu.upc.vacapp.animal.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
-import java.io.File
 
 @Entity
 data class AnimalEntity(
@@ -21,16 +19,16 @@ data class AnimalEntity(
     val synced: Boolean = false
 ) {
     companion object {
-        fun fromAnimal(animal: Animal, userId: Int): AnimalEntity {
+        fun fromAnimal(animal: Animal, userId: Int, animalId: Int): AnimalEntity {
             return AnimalEntity(
-                id = animal.id,
+                id = animalId,
                 name = animal.name,
                 gender = if (animal.isMale) "male" else "female",
                 birthDate = animal.birthDate,
                 breed = animal.breed,
                 location = animal.location,
                 stableId = animal.barnId,
-                imagePath = animal.image.toString(),
+                imagePath = animal.image,
                 age = animal.age,
                 userId = userId,
                 synced = false
@@ -40,19 +38,16 @@ data class AnimalEntity(
 
     fun toAnimal(): Animal {
         return Animal(
-            id = this.id,
-            name = this.name,
-            breed = this.breed,
-            age = this.age,
-            birthDate = this.birthDate,
+            id = id,
+            name = name,
+            breed = breed,
+            age = age,
+            birthDate = birthDate,
             barnId = this.stableId,
-            location = this.location,
-            image = if (imagePath.startsWith("/")) {
-                AnimalImage.FromFile(File(imagePath))
-            } else {
-                AnimalImage.FromUrl(imagePath)
-            },
-            isMale = this.gender == "male"
+            location = location,
+            isMale = this.gender == "male",
+            image = imagePath
         )
     }
+
 }

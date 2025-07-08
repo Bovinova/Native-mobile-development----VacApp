@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
 import pe.edu.upc.vacapp.animal.presentation.viewmodel.AnimalViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
 
@@ -77,12 +76,7 @@ fun AnimalCard(
 ) {
     Log.d("animal", animal.toString())
     val icon = if (animal.isMale) R.drawable.gender_male else R.drawable.gender_female
-    val imgModel = when (val image = animal.image) {
-        is AnimalImage.FromUrl -> image.url
-        is AnimalImage.FromFile -> image.file
-        null -> R.drawable.add_image_placeholder
-    }
-
+    val imgModel = animal.image.takeIf { it.isNotBlank() } ?: R.drawable.add_image_placeholder
 
     Card(
         modifier = Modifier

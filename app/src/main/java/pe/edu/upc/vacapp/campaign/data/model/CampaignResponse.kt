@@ -47,8 +47,8 @@ data class CampaignResponse(
             barnId = stableId,
             name = name,
             description = description,
-            startdate = startDateTime.format(outputFormatter),
-            enddate = endDateTime.format(outputFormatter),
+            startDate = startDateTime.format(outputFormatter),
+            endDate = endDateTime.format(outputFormatter),
         )
     }
 

@@ -23,4 +23,10 @@ interface BarnDao {
 
     @Query("DELETE FROM BarnEntity WHERE id = :id")
     fun deleteById(id: Int)
+
+    @Query("SELECT MAX(id) FROM BarnEntity")
+    suspend fun getLastId(): Int?
+
+    @Query("SELECT * FROM BarnEntity WHERE id = :id")
+    suspend fun getBarnById(id: Int): BarnEntity?
 }

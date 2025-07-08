@@ -82,7 +82,7 @@ fun CardCampaignView(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val dateString = campaign.startdate
+                val dateString = campaign.startDate
                 val dateTime = LocalDateTime.parse(dateString)
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                 val formattedDate = dateTime.format(formatter)
@@ -104,7 +104,7 @@ fun CardCampaignView(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val dateString = campaign.enddate
+                val dateString = campaign.endDate
                 val dateTime = LocalDateTime.parse(dateString)
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                 val formattedDate = dateTime.format(formatter)

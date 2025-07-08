@@ -25,33 +25,35 @@ class UserInfoRepository(
     private val nextCampaignDao: NextCampaignDao
 ) {
     suspend fun getUserInfo(): Result<UserInfo> = withContext(Dispatchers.IO) {
-        val userId = JwtStorage.getUserId()
+        var userId = JwtStorage.getUserId()
 
-        if (userId == null) {
-            if (isOnline()) {
-                return@withContext fetchAndStoreUserInfo()
+        if (userId == null && isOnline()) {
+            val fetchResult = fetchAndStoreUserInfo()
+            if (fetchResult is Result.Success) {
+                userId = fetchResult.data.id
             } else {
-                return@withContext Result.Error(IOException("No internet connection and no local data"))
+                return@withContext fetchResult
             }
         }
 
+        if (userId == null) {
+            return@withContext Result.Error(Exception("User not authenticated"))
+        }
+
         val currentDate = LocalDateTime.now().toString()
+
         val localUser = userInfoDao.getUserInfoByUserId(userId)
-        val localNextCampaigns = localUser?.let {
+        val localCampaigns = localUser?.let {
             nextCampaignDao.getUpcomingCampaigns(it.id, currentDate).map { nc -> nc.toNextCampaign() }
         } ?: emptyList()
 
-        if (isOnline()) {
-            val apiResult = fetchAndStoreUserInfo()
-            if (apiResult is Result.Success) return@withContext apiResult
-        }
-
         return@withContext if (localUser != null) {
-            Result.Success(localUser.toUserInfo(localNextCampaigns))
+            Result.Success(localUser.toUserInfo(localCampaigns))
         } else {
-            Result.Error(IOException("No local data and no internet connection"))
+            Result.Error(IOException("No local data available"))
         }
     }
+
 
     private suspend fun fetchAndStoreUserInfo(): Result<UserInfo> {
         return try {
@@ -82,25 +84,4 @@ class UserInfoRepository(
             Result.Error(e)
         }
     }
-
-    /*suspend fun getUserInfo(): Result<UserInfo> = withContext(Dispatchers.IO) {
-        try {
-            val res = userInfoService.getUserInfo()
-
-            if (res.isSuccessful) {
-                res.body()?.toUserInfo()?.let {
-                    JwtStorage.saveUserId(it.id)
-                    return@withContext Result.Success(it)
-                }
-                return@withContext Result.Error(IOException("Empty Response"))
-            } else {
-                val error = res.errorBody()?.string() ?: "Unknown Error"
-                Log.e("UserInfoRepository", "Error en API: $error")
-                return@withContext Result.Error(IOException("Server Connection: $error"))
-            }
-        } catch (e: Exception) {
-            Log.e("UserInfoRepository", "Excepción en getUserInfo", e)
-            return@withContext Result.Error(e)
-        }
-    }*/
 }

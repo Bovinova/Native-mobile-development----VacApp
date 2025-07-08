@@ -4,7 +4,9 @@ import pe.edu.upc.vacapp.animal.data.local.AnimalDao
 import pe.edu.upc.vacapp.animal.data.remote.AnimalService
 import pe.edu.upc.vacapp.animal.data.repository.AnimalRepository
 import pe.edu.upc.vacapp.barn.data.local.BarnDao
+import pe.edu.upc.vacapp.home.data.di.DataModule.getUserInfoDao
 import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getAppDatabase
+import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getPendingOperationDao
 import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getRetrofit
 
 object DataModule {
@@ -21,6 +23,12 @@ object DataModule {
     }
 
     fun getAnimalRepository(): AnimalRepository {
-        return AnimalRepository(getAnimalService(), getAnimalDao(), getBarnDao())
+        return AnimalRepository(
+            getAnimalService(),
+            getAnimalDao(),
+            getBarnDao(),
+            getPendingOperationDao(),
+            getUserInfoDao()
+        )
     }
 }

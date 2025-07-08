@@ -28,5 +28,11 @@ interface AnimalDao {
 
     @Query("SELECT * FROM AnimalEntity WHERE id = :id")
     fun getAnimalById(id: Int): AnimalEntity?
+
+    @Query("DELETE FROM AnimalEntity WHERE id = :id")
+    fun deleteById(id: Int)
+
+    @Query("SELECT MAX(id) FROM AnimalEntity")
+    suspend fun getLastId(): Int?
 }
 

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarToday
@@ -41,7 +40,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -49,7 +47,6 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
 import pe.edu.upc.vacapp.animal.presentation.viewmodel.AnimalViewModel
 import pe.edu.upc.vacapp.barn.domain.model.Barn
 import pe.edu.upc.vacapp.ui.theme.Color
@@ -94,7 +91,6 @@ fun AddAnimalCard(
     val errorMessage = viewmodel.errorMessage.collectAsState().value
     val context = LocalContext.current
     val imageUri = remember { mutableStateOf<Uri?>(null) }
-    val imageFile = remember { mutableStateOf<File?>(null) }
     val newAnimal = remember { mutableStateOf(Animal()) }
     val barns = viewmodel.barn.collectAsState()
     val addSuccess = viewmodel.addAnimalSuccess.collectAsState().value
@@ -108,8 +104,7 @@ fun AddAnimalCard(
             val inputStream = context.contentResolver.openInputStream(it)
             val tempFile = File.createTempFile("animal", ".jpg", context.cacheDir)
             inputStream?.use { input -> tempFile.outputStream().use { input.copyTo(it) } }
-            imageFile.value = tempFile
-            newAnimal.value = newAnimal.value.copy(image = AnimalImage.FromFile(tempFile))
+            newAnimal.value = newAnimal.value.copy(image = tempFile.absolutePath)
         }
     }
 
@@ -308,39 +303,6 @@ fun AddAnimalCard(
 }
 
 @Composable
-fun NumberTextField(
-    label: String,
-    initialValue: Number?,
-    onValueChange: (Number) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val textState = remember { mutableStateOf(initialValue?.toString() ?: "") }
-
-    TextField(
-        value = textState.value,
-        onValueChange = { newText ->
-            textState.value = newText
-
-            // Parse y callback
-            val parsedValue = when (initialValue) {
-                is Int -> newText.toIntOrNull()
-                is Double -> newText.toDoubleOrNull()
-                else -> null
-            }
-            parsedValue?.let { onValueChange(it) }
-        },
-        label = { Text(label) },
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-        modifier = modifier,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent
-        )
-    )
-}
-
-
-@Composable
 fun DatePickerTextField(
     label: String,
     date: String,
@@ -348,7 +310,6 @@ fun DatePickerTextField(
     textStyle: TextStyle = TextStyle.Default
 ) {
     val context = LocalContext.current
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val calendar = Calendar.getInstance()
 
     val datePickerDialog = remember {
@@ -356,7 +317,7 @@ fun DatePickerTextField(
             context,
             { _, year, month, dayOfMonth ->
                 val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                onDateChange(selectedDate.format(formatter))
+                onDateChange(selectedDate.atStartOfDay().toString())
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -364,12 +325,23 @@ fun DatePickerTextField(
         )
     }
 
+    val displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val displayDate = if (date.isNotBlank() && date.length >= 10) {
+        try {
+            LocalDate.parse(date.substring(0, 10)).format(displayFormatter)
+        } catch (e: Exception) {
+            ""
+        }
+    } else {
+        ""
+    }
+
     TextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp),
-        value = date,
-        onValueChange = { },
+        value = displayDate,
+        onValueChange = {},
         readOnly = true,
         label = { Text(label, color = Color.Black) },
         trailingIcon = {
@@ -390,7 +362,6 @@ fun DatePickerTextField(
         textStyle = textStyle
     )
 }
-
 
 @Composable
 fun DropdownSelector(

@@ -9,6 +9,6 @@ data class Animal(
     val birthDate: String = "",
     val barnId: Int = 0,
     val location: String = "",
-    val image: AnimalImage? = null,
+    val image: String = "",
     val isMale: Boolean = true
 )

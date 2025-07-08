@@ -12,7 +12,10 @@ import pe.edu.upc.vacapp.animal.data.remote.AnimalService
 import pe.edu.upc.vacapp.animal.domain.model.Animal
 import pe.edu.upc.vacapp.barn.data.local.BarnDao
 import pe.edu.upc.vacapp.barn.domain.model.Barn
+import pe.edu.upc.vacapp.home.data.local.UserInfoDao
+import pe.edu.upc.vacapp.shared.createPendingOperation
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
+import pe.edu.upc.vacapp.shared.data.local.PendingOperationDao
 import pe.edu.upc.vacapp.shared.isOnline
 import java.io.File
 import java.net.URL
@@ -20,12 +23,22 @@ import java.net.URL
 class AnimalRepository(
     private val animalService: AnimalService,
     private val animalDao: AnimalDao,
-    private val barnDao: BarnDao
-) {
+    private val barnDao: BarnDao,
+    private val pendingOperationDao: PendingOperationDao,
+    private val userInfoDao: UserInfoDao
+){
     suspend fun addAnimal(animal: Animal) = withContext(Dispatchers.IO) {
         val userId = JwtStorage.getUserId() ?: throw Exception("User not authenticated")
-        val animalEntity = AnimalEntity.fromAnimal(animal, userId)
+
+        val lastId = animalDao.getLastId() ?: 0
+        val generatedId = lastId + 1
+
+        val finalImagePath = copyImageToInternalStorageIfNeeded(animal.image)
+        val updatedAnimal = animal.copy(image = finalImagePath)
+        val animalEntity = AnimalEntity.fromAnimal(updatedAnimal, userId, generatedId)
+
         animalDao.insertAnimal(animalEntity)
+        userInfoDao.increaseTotalAnimals(userId)
 
         if (isOnline()) {
             try {
@@ -41,13 +54,37 @@ class AnimalRepository(
                 )
 
                 if (res.isSuccessful) {
+                    val animalFromApi = res.body()
+
+                    if (animalFromApi != null) {
+                        animalDao.deleteById(generatedId)
+
+                        val newAnimalEntity = animalFromApi.toAnimalEntity(userId)
+                        animalDao.insertAnimal(newAnimalEntity)
+                    }
+
                     animalDao.updateSyncedStatus(animal.id, true)
+                    animalDao.deleteById(generatedId)
                 } else {
                     throw Exception("Error adding animal: ${res.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 throw Exception("Error de red: ${e.message}")
             }
+        }
+        else{
+          val barn = barnDao.getBarnById(animalEntity.stableId)
+                ?: throw Exception("Barn not found for campaign")
+
+            val localId = if (!barn.synced) barn.id else 0
+
+            val pendingOperation = createPendingOperation(
+                entity = "animal",
+                data = animalEntity,
+                localId = localId
+            )
+
+            pendingOperationDao.insert(pendingOperation)
         }
     }
 
@@ -121,4 +158,22 @@ class AnimalRepository(
                 null
             }
         }
+
+    private fun copyImageToInternalStorageIfNeeded(imagePath: String): String {
+        val context = Vacapp.instance.applicationContext
+        val sourceFile = File(imagePath)
+
+        if (sourceFile.absolutePath.startsWith(context.filesDir.absolutePath)) {
+            return imagePath
+        }
+
+        val destDir = File(context.filesDir, "animals")
+        if (!destDir.exists()) destDir.mkdirs()
+
+        val destFile = File(destDir, "animal_${System.currentTimeMillis()}.jpg")
+        sourceFile.copyTo(destFile, overwrite = true)
+
+        return destFile.absolutePath
+    }
+
 }

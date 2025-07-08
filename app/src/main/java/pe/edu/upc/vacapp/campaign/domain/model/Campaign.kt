@@ -4,7 +4,7 @@ data class Campaign(
     val id: Int = 0,
     val name: String = "",
     val description: String = "",
-    val startdate: String = "",
-    val enddate: String = "",
+    val startDate: String = "",
+    val endDate: String = "",
     val barnId: Int = 0,
 )

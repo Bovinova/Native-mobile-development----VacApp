@@ -27,7 +27,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview(showBackground = true)
@@ -36,11 +35,7 @@ fun AnimalDetails(
     animal: Animal = Animal()
 ) {
     val icon = if (animal.isMale) R.drawable.gender_male else R.drawable.gender_female
-    val imgModel = when (val image = animal.image) {
-        is AnimalImage.FromUrl -> image.url
-        is AnimalImage.FromFile -> image.file
-        null -> R.drawable.add_image_placeholder
-    }
+    val imgModel = animal.image.takeIf { it.isNotBlank() } ?: R.drawable.add_image_placeholder
 
     Column(
         modifier = Modifier.fillMaxSize(),

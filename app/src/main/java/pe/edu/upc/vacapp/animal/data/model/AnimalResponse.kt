@@ -5,7 +5,6 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.animal.domain.model.Animal
-import pe.edu.upc.vacapp.animal.domain.model.AnimalImage
 
 data class AnimalResponse(
     val id: Int,
@@ -45,7 +44,7 @@ data class AnimalResponse(
             birthDate = formattedDate,
             barnId = stableId,
             location = location,
-            image = AnimalImage.FromUrl(bovineImg),
+            image = bovineImg,
             isMale = gender == "male"
         )
     }

@@ -20,8 +20,8 @@ data class CreateCampaignRequest(
             return CreateCampaignRequest(
                 name = c.name,
                 description = c.description,
-                startDate = c.startdate,
-                endDate = c.enddate,
+                startDate = c.startDate,
+                endDate = c.endDate,
                 status = "",
                 goals = emptyList<Any>(),
                 channels = emptyList<Any>(),

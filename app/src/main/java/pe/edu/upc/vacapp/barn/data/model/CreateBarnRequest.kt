@@ -12,7 +12,7 @@ data class CreateBarnRequest(
             return CreateBarnRequest(
                 name = b.name,
                 limit = b.limit.toIntOrNull() ?: 0,
-                id = 1
+                id = b.id
             )
         }
     }
