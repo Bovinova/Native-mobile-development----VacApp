@@ -40,7 +40,6 @@ import pe.edu.upc.vacapp.animal.presentation.di.PresentationModule.getAnimalView
 import pe.edu.upc.vacapp.animal.presentation.view.AddAnimalForm
 import pe.edu.upc.vacapp.animal.presentation.view.AnimalCardList
 import pe.edu.upc.vacapp.animal.presentation.view.AnimalDetails
-import pe.edu.upc.vacapp.inventory.presentation.di.PresentationModule.getInventoryViewModel
 import pe.edu.upc.vacapp.barn.presentation.di.PresentationModel.getBarnViewModel
 import pe.edu.upc.vacapp.barn.presentation.view.AddBarnView
 import pe.edu.upc.vacapp.barn.presentation.view.BarnView
@@ -50,6 +49,7 @@ import pe.edu.upc.vacapp.campaign.presentation.view.FormCampaignView
 import pe.edu.upc.vacapp.home.presentation.di.PresentationModule.getHomeViewModel
 import pe.edu.upc.vacapp.home.presentation.view.HomeView
 import pe.edu.upc.vacapp.inventory.domain.model.Inventory
+import pe.edu.upc.vacapp.inventory.presentation.di.PresentationModule.getInventoryViewModel
 import pe.edu.upc.vacapp.inventory.presentation.view.AddInventoryForm
 import pe.edu.upc.vacapp.inventory.presentation.view.InventoryCardList
 import pe.edu.upc.vacapp.inventory.presentation.view.InventoryDetails

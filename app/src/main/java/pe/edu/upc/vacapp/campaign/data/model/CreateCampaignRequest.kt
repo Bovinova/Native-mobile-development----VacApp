@@ -1,7 +1,5 @@
 package pe.edu.upc.vacapp.campaign.data.model
 
-import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
 
 

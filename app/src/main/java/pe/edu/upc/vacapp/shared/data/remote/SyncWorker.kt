@@ -1,7 +1,6 @@
 package pe.edu.upc.vacapp.shared.data.remote
 
 import android.content.Context
-import androidx.room.PrimaryKey
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
@@ -26,6 +25,12 @@ import pe.edu.upc.vacapp.campaign.data.model.CampaignEntity
 import pe.edu.upc.vacapp.campaign.data.model.CreateCampaignRequest
 import pe.edu.upc.vacapp.campaign.data.remote.CampaignService
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
+import pe.edu.upc.vacapp.inventory.data.di.DataModule.getInventoryService
+import pe.edu.upc.vacapp.inventory.data.local.InventoryDao
+import pe.edu.upc.vacapp.inventory.data.model.AddInventoryRequest
+import pe.edu.upc.vacapp.inventory.data.model.InventoryEntity
+import pe.edu.upc.vacapp.inventory.data.remote.InventoryService
+import pe.edu.upc.vacapp.inventory.domain.model.Inventory
 import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getAppDatabase
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
 import pe.edu.upc.vacapp.shared.data.local.PendingOperationDao
@@ -35,7 +40,6 @@ class SyncWorker(
     appContext: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams) {
-
     private val pendingOperationDao: PendingOperationDao = getAppDatabase().pendingOperationDao()
     private val barnDao: BarnDao = getAppDatabase().barnDao()
     private val barnService: BarnService = getBarnService()
@@ -43,6 +47,8 @@ class SyncWorker(
     private val campaignService: CampaignService = getCampaignService()
     private val animalDao: AnimalDao = getAppDatabase().animalDao()
     private val animalService: AnimalService = getAnimalService()
+    private val inventoryDao: InventoryDao = getAppDatabase().inventoryDao()
+    private val inventoryService: InventoryService = getInventoryService()
 
     override suspend fun doWork(): Result {
         val pendingOperations = pendingOperationDao.getAll()
@@ -141,7 +147,8 @@ class SyncWorker(
                     }
 
                     "animal" -> {
-                        val animal = Gson().fromJson(operation.dataJson, AnimalJson::class.java).toAnimal()
+                        val animal =
+                            Gson().fromJson(operation.dataJson, AnimalJson::class.java).toAnimal()
 
                         val file = File(animal.image)
 
@@ -162,6 +169,21 @@ class SyncWorker(
                         if (response.isSuccessful) {
                             val createdAnimal = response.body()!!
 
+                            val relatedInventoryOps =
+                                pendingOperationDao.getAll().filter { it.entity == "inventory" }
+
+                            for (op in relatedInventoryOps) {
+                                val inventory = Gson().fromJson(op.dataJson, Inventory::class.java)
+
+                                if (op.localId != 0 && op.localId == animal.id) {
+                                    val updatedInventory =
+                                        inventory.copy(bovineId = createdAnimal.id)
+                                    val updatedJson = Gson().toJson(updatedInventory)
+                                    val updatedOp = op.copy(dataJson = updatedJson)
+                                    pendingOperationDao.update(updatedOp)
+                                }
+                            }
+
                             animalDao.deleteById(animal.id)
 
                             val userId = JwtStorage.getUserId() ?: return Result.retry()
@@ -180,7 +202,7 @@ class SyncWorker(
                                 synced = true
                             )
 
-                            animalDao.insertAnimal(animalEntity)
+                            animalDao.insert(animalEntity)
 
                             pendingOperationDao.delete(operation)
                         } else {
@@ -188,6 +210,47 @@ class SyncWorker(
                         }
                     }
 
+                    "inventory" -> {
+                        val inventory = Gson().fromJson(operation.dataJson, Inventory::class.java)
+
+                        val file = File(inventory.image)
+
+                        val request = AddInventoryRequest.fromInventory(
+                            inventory.copy(image = file.absolutePath)
+                        )
+                        val response = inventoryService.addInventory(
+                            request.name.toRequestBody(),
+                            request.vaccineType.toRequestBody(),
+                            request.vaccineDate.toRequestBody(),
+                            request.bovineId.toRequestBody(),
+                            request.image.toMultipartPart("FileData")
+                        )
+
+                        if (response.isSuccessful) {
+                            val createdInventory = response.body()!!
+
+                            inventoryDao.deleteById(inventory.id)
+
+                            val userId = JwtStorage.getUserId() ?: return Result.retry()
+
+                            val inventoryEntity = InventoryEntity(
+                                id = createdInventory.id,
+                                name = inventory.name,
+                                vaccineType = createdInventory.vaccineType,
+                                vaccineDate = createdInventory.vaccineDate,
+                                bovineId = createdInventory.bovineId,
+                                imagePath = inventory.image,
+                                userId = userId,
+                                synced = true
+                            )
+
+                            inventoryDao.insert(inventoryEntity)
+
+                            pendingOperationDao.delete(operation)
+                        } else {
+                            return Result.retry()
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 return Result.retry()

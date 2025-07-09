@@ -1,14 +1,13 @@
 package pe.edu.upc.vacapp.inventory.presentation.viewmodel
 
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import pe.edu.upc.vacapp.animal.domain.model.Animal
 import pe.edu.upc.vacapp.inventory.data.repository.InventoryRepository
 import pe.edu.upc.vacapp.inventory.domain.model.Inventory
-import pe.edu.upc.vacapp.animal.domain.model.Animal
 
 class InventoryViewModel(
     private val inventoryRepository: InventoryRepository

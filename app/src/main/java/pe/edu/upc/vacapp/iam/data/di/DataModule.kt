@@ -2,7 +2,6 @@ package pe.edu.upc.vacapp.iam.data.di
 
 import pe.edu.upc.vacapp.iam.data.remote.AuthService
 import pe.edu.upc.vacapp.iam.data.repository.AuthRepository
-import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getAppDatabase
 import pe.edu.upc.vacapp.shared.data.di.SharedDataModule.getRetrofit
 
 object DataModule {

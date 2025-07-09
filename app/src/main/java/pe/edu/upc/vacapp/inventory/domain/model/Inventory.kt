@@ -1,12 +1,13 @@
 package pe.edu.upc.vacapp.inventory.domain.model
 
-import java.util.Date
+import com.google.gson.annotations.SerializedName
 
 data class Inventory(
-    val id: Int? = null,
+    val id: Int = 0,
     val name: String = "",
     val vaccineType: String = "",
     val vaccineDate: String = "",
     val bovineId: Int = 0,
-    val image: InventoryImage? = null
+    @SerializedName("imagePath")
+    val image: String = ""
 )

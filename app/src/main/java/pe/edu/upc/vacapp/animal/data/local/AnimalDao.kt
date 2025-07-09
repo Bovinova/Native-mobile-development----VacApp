@@ -9,22 +9,13 @@ import pe.edu.upc.vacapp.animal.data.model.AnimalEntity
 @Dao
 interface AnimalDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAnimal(animal: AnimalEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAnimals(animals: List<AnimalEntity>)
-
-    @Query("SELECT * FROM AnimalEntity")
-    suspend fun getAllAnimals(): List<AnimalEntity>
+    suspend fun insert(animal: AnimalEntity)
 
     @Query("SELECT * FROM AnimalEntity WHERE userId = :userId")
     suspend fun getAnimalsByUserId(userId: Int): List<AnimalEntity>
 
     @Query("UPDATE AnimalEntity SET synced = :synced WHERE id = :animalId")
     suspend fun updateSyncedStatus(animalId: Int, synced: Boolean)
-
-    @Query("DELETE FROM AnimalEntity")
-    suspend fun clearAnimals()
 
     @Query("SELECT * FROM AnimalEntity WHERE id = :id")
     fun getAnimalById(id: Int): AnimalEntity?

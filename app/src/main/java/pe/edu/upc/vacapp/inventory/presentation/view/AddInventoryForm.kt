@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -46,15 +47,12 @@ import coil3.compose.AsyncImage
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import pe.edu.upc.vacapp.R
-import pe.edu.upc.vacapp.inventory.domain.model.Inventory
-import pe.edu.upc.vacapp.inventory.domain.model.InventoryImage
-import pe.edu.upc.vacapp.inventory.presentation.viewmodel.InventoryViewModel
 import pe.edu.upc.vacapp.animal.domain.model.Animal
+import pe.edu.upc.vacapp.inventory.domain.model.Inventory
+import pe.edu.upc.vacapp.inventory.presentation.viewmodel.InventoryViewModel
 import pe.edu.upc.vacapp.ui.theme.Color
 import java.io.File
 import java.util.Calendar
-import androidx.compose.ui.text.TextStyle
-
 
 //@Preview(showBackground = true)
 @Composable
@@ -87,7 +85,6 @@ fun AddInventoryCard(
 ) {
     val context = LocalContext.current
     val imageUri = remember { mutableStateOf<Uri?>(null) }
-    val imageFile = remember { mutableStateOf<File?>(null) }
     val newInventory = remember { mutableStateOf(Inventory()) }
     val animals = viewmodel.animal.collectAsState()
 
@@ -100,8 +97,7 @@ fun AddInventoryCard(
             val inputStream = context.contentResolver.openInputStream(it)
             val tempFile = File.createTempFile("inventory", ".jpg", context.cacheDir)
             inputStream?.use { input -> tempFile.outputStream().use { input.copyTo(it) } }
-            imageFile.value = tempFile
-            newInventory.value = newInventory.value.copy(image = InventoryImage.FromFile(tempFile))
+            newInventory.value = newInventory.value.copy(image = tempFile.absolutePath)
         }
     }
 
@@ -273,7 +269,6 @@ fun DatePickerTextField(
     textStyle: TextStyle = TextStyle.Default
 ) {
     val context = LocalContext.current
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val calendar = Calendar.getInstance()
 
     val datePickerDialog = remember {
@@ -281,7 +276,7 @@ fun DatePickerTextField(
             context,
             { _, year, month, dayOfMonth ->
                 val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                onDateChange(selectedDate.format(formatter))
+                onDateChange(selectedDate.atStartOfDay().toString())
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -289,11 +284,22 @@ fun DatePickerTextField(
         )
     }
 
+    val displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val displayDate = if (date.isNotBlank() && date.length >= 10) {
+        try {
+            LocalDate.parse(date.substring(0, 10)).format(displayFormatter)
+        } catch (e: Exception) {
+            ""
+        }
+    } else {
+        ""
+    }
+
     TextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp),
-        value = date,
+        value = displayDate,
         onValueChange = { },
         readOnly = true,
         label = { Text(label, color = Color.Black) },

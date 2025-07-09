@@ -1,7 +1,6 @@
 package pe.edu.upc.vacapp.barn.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,9 +16,6 @@ interface BarnDao {
 
     @Query("UPDATE BarnEntity SET synced = :synced WHERE id = :barnId")
     suspend fun updateSyncedStatus(barnId: Int, synced: Boolean)
-
-    @Delete
-    suspend fun delete(barn: BarnEntity)
 
     @Query("DELETE FROM BarnEntity WHERE id = :id")
     fun deleteById(id: Int)

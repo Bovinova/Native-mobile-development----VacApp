@@ -1,10 +1,8 @@
 package pe.edu.upc.vacapp.animal.data.model
 
-import android.annotation.SuppressLint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import pe.edu.upc.vacapp.animal.domain.model.Animal
 
 data class AnimalResponse(
     val id: Int,
@@ -16,39 +14,6 @@ data class AnimalResponse(
     val bovineImg: String,
     val stableId: Int
 ) {
-    @SuppressLint("DefaultLocale")
-    fun toAnimal(): Animal {
-        val localDateTime = try {
-            LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))
-        } catch (e: Exception) {
-            LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-        }
-
-        val birthDateOnly = localDateTime.toLocalDate()
-        val formattedDate = birthDateOnly.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        val today = LocalDate.now()
-
-        val age = if ((today.monthValue > birthDateOnly.monthValue) ||
-            (today.monthValue == birthDateOnly.monthValue && today.dayOfMonth >= birthDateOnly.dayOfMonth)
-        ) {
-            today.year - birthDateOnly.year
-        } else {
-            today.year - birthDateOnly.year - 1
-        }
-
-        return Animal(
-            id = id,
-            name = name,
-            breed = breed,
-            age = age,
-            birthDate = formattedDate,
-            barnId = stableId,
-            location = location,
-            image = bovineImg,
-            isMale = gender == "male"
-        )
-    }
-
     fun toAnimalEntity(userId: Int): AnimalEntity {
         val localDateTime = try {
             LocalDateTime.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))
@@ -57,7 +22,6 @@ data class AnimalResponse(
         }
 
         val birthDateOnly = localDateTime.toLocalDate()
-        val formattedDate = birthDateOnly.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         val today = LocalDate.now()
 
         val age = if ((today.monthValue > birthDateOnly.monthValue) ||

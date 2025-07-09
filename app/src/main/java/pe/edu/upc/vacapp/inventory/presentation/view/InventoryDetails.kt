@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import pe.edu.upc.vacapp.R
 import pe.edu.upc.vacapp.inventory.domain.model.Inventory
-import pe.edu.upc.vacapp.inventory.domain.model.InventoryImage
 import pe.edu.upc.vacapp.ui.theme.Color
 
 @Preview(showBackground = true)
@@ -31,11 +30,8 @@ import pe.edu.upc.vacapp.ui.theme.Color
 fun InventoryDetails(
     inventory: Inventory = Inventory()
 ) {
-    val imgModel = when (val image = inventory.image) {
-        is InventoryImage.FromUrl -> image.url
-        is InventoryImage.FromFile -> image.file
-        null -> R.drawable.add_image_placeholder
-    }
+    val imgModel = inventory.image.takeIf { it.isNotBlank() } ?: R.drawable.add_image_placeholder
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

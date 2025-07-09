@@ -1,7 +1,6 @@
 package pe.edu.upc.vacapp.campaign.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,9 +16,6 @@ interface CampaignDao {
 
     @Query("UPDATE CampaignEntity SET synced = :synced WHERE id = :campaignId")
     suspend fun updateSyncedStatus(campaignId: Int, synced: Boolean)
-
-    @Delete
-    suspend fun delete(campaign: CampaignEntity)
 
     @Query("DELETE FROM CampaignEntity WHERE id = :id")
     fun deleteById(id: Int)

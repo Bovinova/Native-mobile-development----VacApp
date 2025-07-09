@@ -26,7 +26,7 @@ class AnimalRepository(
     private val barnDao: BarnDao,
     private val pendingOperationDao: PendingOperationDao,
     private val userInfoDao: UserInfoDao
-){
+) {
     suspend fun addAnimal(animal: Animal) = withContext(Dispatchers.IO) {
         val userId = JwtStorage.getUserId() ?: throw Exception("User not authenticated")
 
@@ -37,12 +37,12 @@ class AnimalRepository(
         val updatedAnimal = animal.copy(image = finalImagePath)
         val animalEntity = AnimalEntity.fromAnimal(updatedAnimal, userId, generatedId)
 
-        animalDao.insertAnimal(animalEntity)
+        animalDao.insert(animalEntity)
         userInfoDao.increaseTotalAnimals(userId)
 
         if (isOnline()) {
             try {
-                val req = AddAnimalRequest.fromAnimal(animal)
+                val req = AddAnimalRequest.fromAnimal(updatedAnimal)
                 val res = animalService.addAnimal(
                     req.name.toRequestBody(),
                     req.gender.toRequestBody(),
@@ -60,7 +60,7 @@ class AnimalRepository(
                         animalDao.deleteById(generatedId)
 
                         val newAnimalEntity = animalFromApi.toAnimalEntity(userId)
-                        animalDao.insertAnimal(newAnimalEntity)
+                        animalDao.insert(newAnimalEntity)
                     }
 
                     animalDao.updateSyncedStatus(animal.id, true)
@@ -71,9 +71,8 @@ class AnimalRepository(
             } catch (e: Exception) {
                 throw Exception("Error de red: ${e.message}")
             }
-        }
-        else{
-          val barn = barnDao.getBarnById(animalEntity.stableId)
+        } else {
+            val barn = barnDao.getBarnById(animalEntity.stableId)
                 ?: throw Exception("Barn not found for campaign")
 
             val localId = if (!barn.synced) barn.id else 0
@@ -97,15 +96,18 @@ class AnimalRepository(
             val response = animalService.getAllAnimals()
 
             if (response.isSuccessful) {
-                val animalsFromApi = response.body()?.map { it.toAnimalEntity(userId) } ?: emptyList()
+                val animalsFromApi =
+                    response.body()?.map { it.toAnimalEntity(userId) } ?: emptyList()
 
                 animalsFromApi.forEach { animalEntity ->
-                    val localPath = downloadImageToInternalStorage(animalEntity.imagePath, animalEntity.id)
+                    val localPath =
+                        downloadImageToInternalStorage(animalEntity.imagePath, animalEntity.id)
 
                     val existingAnimal = animalDao.getAnimalById(animalEntity.id)
                     if (existingAnimal == null) {
-                        val animalWithUpdatedPath = animalEntity.copy(imagePath = localPath ?: animalEntity.imagePath)
-                        animalDao.insertAnimal(animalWithUpdatedPath)
+                        val animalWithUpdatedPath =
+                            animalEntity.copy(imagePath = localPath ?: animalEntity.imagePath)
+                        animalDao.insert(animalWithUpdatedPath)
                     } else {
                         if (localPath != null) {
                             animalDao.updateSyncedStatus(animalEntity.id, true)
@@ -175,5 +177,4 @@ class AnimalRepository(
 
         return destFile.absolutePath
     }
-
 }
