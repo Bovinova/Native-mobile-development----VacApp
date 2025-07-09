@@ -1,12 +1,15 @@
 package pe.edu.upc.vacapp.shared.data.remote
 
 import android.content.Context
+import androidx.room.PrimaryKey
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import pe.edu.upc.vacapp.animal.data.di.DataModule.getAnimalService
 import pe.edu.upc.vacapp.animal.data.local.AnimalDao
 import pe.edu.upc.vacapp.animal.data.model.AddAnimalRequest
+import pe.edu.upc.vacapp.animal.data.model.AnimalEntity
+import pe.edu.upc.vacapp.animal.data.model.AnimalJson
 import pe.edu.upc.vacapp.animal.data.model.toMultipartPart
 import pe.edu.upc.vacapp.animal.data.model.toRequestBody
 import pe.edu.upc.vacapp.animal.data.remote.AnimalService
@@ -19,6 +22,7 @@ import pe.edu.upc.vacapp.barn.data.remote.BarnService
 import pe.edu.upc.vacapp.barn.domain.model.Barn
 import pe.edu.upc.vacapp.campaign.data.di.DataModule.getCampaignService
 import pe.edu.upc.vacapp.campaign.data.local.CampaignDao
+import pe.edu.upc.vacapp.campaign.data.model.CampaignEntity
 import pe.edu.upc.vacapp.campaign.data.model.CreateCampaignRequest
 import pe.edu.upc.vacapp.campaign.data.remote.CampaignService
 import pe.edu.upc.vacapp.campaign.domain.model.Campaign
@@ -76,7 +80,7 @@ class SyncWorker(
                             for (op in relatedAnimalOps) {
                                 val animal = Gson().fromJson(op.dataJson, Animal::class.java)
 
-                                if (op.localId != 0 && op.localId == barn.id ) {
+                                if (op.localId != 0 && op.localId == barn.id) {
                                     val updatedAnimal = animal.copy(barnId = createdBarn.id)
                                     val updatedJson = Gson().toJson(updatedAnimal)
                                     val updatedOp = op.copy(dataJson = updatedJson)
@@ -87,8 +91,15 @@ class SyncWorker(
                             barnDao.deleteById(barn.id)
 
                             val userId = JwtStorage.getUserId() ?: return Result.retry()
-                            val barnEntity =
-                                BarnEntity.fromBarn(barn.copy(id = createdBarn.id), userId)
+
+                            val barnEntity = BarnEntity(
+                                id = createdBarn.id,
+                                name = barn.name,
+                                limit = barn.limit,
+                                userId = userId,
+                                synced = true
+                            )
+
                             barnDao.insert(barnEntity)
 
                             pendingOperationDao.delete(operation)
@@ -109,8 +120,19 @@ class SyncWorker(
                             campaignDao.deleteById(campaign.id)
 
                             val userId = JwtStorage.getUserId() ?: return Result.retry()
-                            val newCampaignEntity = createdCampaign.toCampaignEntity(userId)
-                            campaignDao.insert(newCampaignEntity)
+
+                            val campaignEntity = CampaignEntity(
+                                id = createdCampaign.id,
+                                name = campaign.name,
+                                description = campaign.description,
+                                startDate = createdCampaign.startDate,
+                                endDate = createdCampaign.endDate,
+                                barnId = createdCampaign.stableId,
+                                userId = userId,
+                                synced = true
+                            )
+
+                            campaignDao.insert(campaignEntity)
 
                             pendingOperationDao.delete(operation)
                         } else {
@@ -119,7 +141,7 @@ class SyncWorker(
                     }
 
                     "animal" -> {
-                        val animal = Gson().fromJson(operation.dataJson, Animal::class.java)
+                        val animal = Gson().fromJson(operation.dataJson, AnimalJson::class.java).toAnimal()
 
                         val file = File(animal.image)
 
@@ -138,7 +160,27 @@ class SyncWorker(
                         )
 
                         if (response.isSuccessful) {
-                            animalDao.updateSyncedStatus(animal.id, true)
+                            val createdAnimal = response.body()!!
+
+                            animalDao.deleteById(animal.id)
+
+                            val userId = JwtStorage.getUserId() ?: return Result.retry()
+
+                            val animalEntity = AnimalEntity(
+                                id = createdAnimal.id,
+                                name = animal.name,
+                                gender = if (animal.isMale) "male" else "female",
+                                birthDate = createdAnimal.birthDate,
+                                breed = createdAnimal.breed,
+                                location = createdAnimal.location,
+                                stableId = createdAnimal.stableId,
+                                imagePath = animal.image,
+                                age = animal.age,
+                                userId = userId,
+                                synced = true
+                            )
+
+                            animalDao.insertAnimal(animalEntity)
 
                             pendingOperationDao.delete(operation)
                         } else {

@@ -4,12 +4,16 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDateTime
+import pe.edu.upc.vacapp.animal.data.repository.AnimalRepository
+import pe.edu.upc.vacapp.barn.data.repository.BarnRepository
+import pe.edu.upc.vacapp.campaign.data.repository.CampaignRepository
 import pe.edu.upc.vacapp.home.data.local.NextCampaignDao
 import pe.edu.upc.vacapp.home.data.local.UserInfoDao
 import pe.edu.upc.vacapp.home.data.model.NextCampaignEntity
 import pe.edu.upc.vacapp.home.data.model.UserInfoEntity
 import pe.edu.upc.vacapp.home.data.remote.UserInfoService
 import pe.edu.upc.vacapp.home.domain.model.UserInfo
+import pe.edu.upc.vacapp.inventory.data.repository.InventoryRepository
 import pe.edu.upc.vacapp.shared.data.local.JwtStorage
 import pe.edu.upc.vacapp.shared.isOnline
 import java.io.IOException
@@ -22,7 +26,11 @@ sealed class Result<out T> {
 class UserInfoRepository(
     private val userInfoService: UserInfoService,
     private val userInfoDao: UserInfoDao,
-    private val nextCampaignDao: NextCampaignDao
+    private val nextCampaignDao: NextCampaignDao,
+    private val barnRepository: BarnRepository,
+    private val campaignRepository: CampaignRepository,
+    private val animalsRepository: AnimalRepository,
+    private val inventoryRepository: InventoryRepository
 ) {
     suspend fun getUserInfo(): Result<UserInfo> = withContext(Dispatchers.IO) {
         var userId = JwtStorage.getUserId()
@@ -36,6 +44,14 @@ class UserInfoRepository(
             }
         }
 
+        if (isOnline()) {
+            //actualizar repositorios locales
+            barnRepository.getBarns()
+            campaignRepository.getCampaign()
+            animalsRepository.getAllAnimals()
+            inventoryRepository.getAllInventories()
+        }
+
         if (userId == null) {
             return@withContext Result.Error(Exception("User not authenticated"))
         }
@@ -44,7 +60,8 @@ class UserInfoRepository(
 
         val localUser = userInfoDao.getUserInfoByUserId(userId)
         val localCampaigns = localUser?.let {
-            nextCampaignDao.getUpcomingCampaigns(it.id, currentDate).map { nc -> nc.toNextCampaign() }
+            nextCampaignDao.getUpcomingCampaigns(it.id, currentDate)
+                .map { nc -> nc.toNextCampaign() }
         } ?: emptyList()
 
         return@withContext if (localUser != null) {
